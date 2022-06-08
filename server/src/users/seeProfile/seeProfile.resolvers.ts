@@ -25,7 +25,12 @@ const resolvers: Resolvers = {
           };
         }
         return {
+          success: true,
           user,
+          include: {
+            followings: true,
+            followers: true,
+          },
         };
       } catch (err) {
         return {
