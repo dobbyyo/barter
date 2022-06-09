@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { createWriteStream, ReadStream, WriteStream } from "fs";
+import { uploadImgS3 } from "../../shared/shared.utils";
 
 import { Resolvers } from "../../types";
 
@@ -11,15 +12,30 @@ const resolvers: Resolvers = {
       { client, loggedInUser }
     ) => {
       try {
+        if (!loggedInUser) {
+          return {
+            success: false,
+            error: "로그인이 필요합니다.",
+          };
+        }
+        console.log(process.env.NODE_ENV);
         let avatarUrl = null;
-        const { filename, createReadStream } = await avatar.file;
-        const newFilename = `${loggedInUser.id}-${Date.now()}-${filename}`;
-        const readStream: ReadStream = createReadStream();
-        const writeStream: WriteStream = createWriteStream(
-          process.cwd() + "/uploads/" + newFilename
-        );
-        readStream.pipe(writeStream);
-        avatarUrl = `http://localhost:4000/static/${newFilename}`;
+
+        if ((process.env.NODE_ENV = "development" && avatar)) {
+          const { filename, createReadStream } = await avatar.file;
+          const newFilename = `${loggedInUser.id}-${Date.now()}-${filename}`;
+          const readStream: ReadStream = createReadStream();
+          const writeStream: WriteStream = createWriteStream(
+            process.cwd() + "/avatars/" + newFilename
+          );
+          readStream.pipe(writeStream);
+          avatarUrl = `http://localhost:4000/static/${newFilename}`;
+        }
+
+        // if ((process.env.NODE_ENV = "production" && avatar)) {
+        //   avatarUrl = await uploadImgS3(avatar, loggedInUser.id, "avatars");
+        // }
+
         let hashPassword = null;
         if (newPassword) {
           hashPassword = await bcrypt.hash(newPassword, 10);
@@ -46,6 +62,7 @@ const resolvers: Resolvers = {
           };
         }
       } catch (err) {
+        console.log(loggedInUser);
         console.log(err);
         return {
           success: false,
