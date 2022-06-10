@@ -36,9 +36,9 @@ const resolvers: Resolvers = {
           postImgsUrl = `http://localhost:4000/static/${newFilename}`;
         }
 
-        if ((process.env.NODE_ENV = "production" && file)) {
-          postImgsUrl = await uploadImgS3(file, loggedInUser.id, "postImgs");
-        }
+        // if ((process.env.NODE_ENV = "production" && file)) {
+        //   postImgsUrl = await uploadImgS3(file, loggedInUser.id, "postImgs");
+        // }
 
         const newPost = await client.post.create({
           data: {

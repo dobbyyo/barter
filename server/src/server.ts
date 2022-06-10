@@ -8,6 +8,7 @@ import morgan from "morgan";
 import { getUser } from "./users/users.utils";
 import { typeDefs, resolvers } from "./schema";
 import client from "./client";
+import pubsub from "./pubsub";
 
 const PORT = process.env.PORT;
 
