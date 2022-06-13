@@ -1,3 +1,5 @@
+import { NEW_MESSAGE } from "../../constant";
+import pubsub from "../../pubsub";
 import { Resolvers } from "../../types";
 
 const resolvers: Resolvers = {
@@ -66,7 +68,7 @@ const resolvers: Resolvers = {
             };
           }
         }
-        await client.message.create({
+        const message = await client.message.create({
           data: {
             payload,
             room: {
@@ -81,6 +83,7 @@ const resolvers: Resolvers = {
             },
           },
         });
+        pubsub.publish(NEW_MESSAGE, { roomUpdates: { ...message } });
         return {
           success: true,
         };
