@@ -24,7 +24,7 @@ const resolvers: Resolvers = {
             error: "게시글이 없습니다.",
           };
         }
-        await client.comment.create({
+        const newComment = await client.comment.create({
           data: {
             payload,
             post: {
@@ -41,6 +41,7 @@ const resolvers: Resolvers = {
         });
         return {
           success: true,
+          id: newComment.id,
         };
       } catch (err) {
         console.log(err);

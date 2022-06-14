@@ -86,6 +86,7 @@ const resolvers: Resolvers = {
         pubsub.publish(NEW_MESSAGE, { roomUpdates: { ...message } });
         return {
           success: true,
+          id: message.id,
         };
       } catch (err) {
         return {

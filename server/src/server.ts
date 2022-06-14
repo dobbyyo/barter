@@ -20,7 +20,7 @@ import client from "./client";
 const startServer = async () => {
   const app: Express = express();
   app.use(graphqlUploadExpress());
-  app.use(morgan("tiny"));
+  app.use(morgan("dev"));
   app.use("/static", express.static("uploads"));
 
   const httpServer: Server = createServer(app);

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
 import { ApolloProvider, useReactiveVar } from '@apollo/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -11,6 +12,7 @@ import NotFound from './page/NotFound';
 import routes from './routes';
 import { darkTheme, GlobalStyles, whiteTheme } from './styles/styles';
 import SignUp from './page/SignUp';
+import Layout from './components/Layout';
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -22,8 +24,16 @@ function App() {
           <GlobalStyles />
           <BrowserRouter>
             <Routes>
-              <Route path={routes.home} element={isLoggedIn ? <Home /> : <Login />} />
-              <Route path={routes.signUp} element={!isLoggedIn && <SignUp />} />
+              <Route
+                path={routes.home}
+                element={
+                  <Layout>
+                    <Home />
+                  </Layout>
+                }
+              />
+              <Route path={routes.login} element={<Login />} />
+              <Route path={routes.signUp} element={<SignUp />} />
               <Route path="/*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
 import { faDice } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
-import { gql, useMutation } from '@apollo/client';
-import { useLocation } from 'react-router-dom';
+import { gql, useMutation, useReactiveVar } from '@apollo/client';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import AuthLayout from '../components/auth/AuthLayout';
 import FormBox from '../components/auth/FormBox';
@@ -16,7 +16,7 @@ import routes from '../routes';
 import PageTitle from '../components/PageTitle';
 import FormError from '../components/auth/FormError';
 import { Mutation, MutationLoginArgs } from '../generated/graphql';
-import { logInUser } from '../apollo';
+import { isLoggedInVar, logInUser } from '../apollo';
 
 const NaverLogin = styled.div`
   color: #00ff0c;
@@ -50,8 +50,16 @@ interface LoginState {
 
 const Login = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
 
   const state = location.state as LoginState | null;
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate(routes.home);
+    }
+  }, [isLoggedIn]);
 
   const {
     register,
@@ -81,6 +89,7 @@ const Login = () => {
       }
       if (success && token) {
         logInUser(token);
+        navigate(routes.home);
       }
     },
   });

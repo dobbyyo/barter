@@ -62,6 +62,13 @@ export type LoginResult = {
   token?: Maybe<Scalars['String']>;
 };
 
+export type MeResult = {
+  __typename?: 'MeResult';
+  error?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+  user?: Maybe<User>;
+};
+
 export type Message = {
   __typename?: 'Message';
   createdAt: Scalars['String'];
@@ -180,11 +187,13 @@ export type MutationResult = {
 export type Post = {
   __typename?: 'Post';
   caption?: Maybe<Scalars['String']>;
-  comments: Scalars['Int'];
+  commentNumber: Scalars['Int'];
+  comments: Array<Maybe<Comment>>;
   createdAt: Scalars['String'];
   file: Scalars['String'];
   hashtag?: Maybe<Array<Maybe<Hashtag>>>;
   id: Scalars['Int'];
+  isLiked: Scalars['Boolean'];
   isMine: Scalars['Boolean'];
   likes: Scalars['Int'];
   title: Scalars['String'];
@@ -195,6 +204,7 @@ export type Post = {
 export type Query = {
   __typename?: 'Query';
   allPosts: AllPostsResult;
+  me: MeResult;
   searchPosts: SearchPostsResult;
   searchUsers: SearchResult;
   seeFeed: SeeFeedResult;

@@ -9,12 +9,7 @@ const resolvers: Resolvers = {
             OR: [
               {
                 caption: {
-                  startsWith: keyword.toLowerCase(),
-                },
-              },
-              {
-                caption: {
-                  endsWith: keyword.toLowerCase(),
+                  contains: keyword.toLowerCase(),
                 },
               },
             ],
@@ -33,12 +28,7 @@ const resolvers: Resolvers = {
             OR: [
               {
                 caption: {
-                  startsWith: keyword.toLowerCase(),
-                },
-              },
-              {
-                caption: {
-                  endsWith: keyword.toLowerCase(),
+                  contains: keyword.toLowerCase(),
                 },
               },
             ],
