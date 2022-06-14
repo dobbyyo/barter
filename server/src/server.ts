@@ -78,7 +78,9 @@ const startServer = async () => {
 
   apolloServer.applyMiddleware({ app });
   httpServer.listen(process.env.PORT, () =>
-    console.log(`🚀 Server: http://localhost:${process.env.PORT}`)
+    console.log(
+      `🚀 Server: http://localhost:${process.env.PORT}${apolloServer.graphqlPath}`
+    )
   );
 };
 startServer();
