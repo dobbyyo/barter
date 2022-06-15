@@ -8,6 +8,7 @@ export default gql`
       id: Int!
       title: String!
       caption: String!
+      category: String!
       file: Upload
     ): MutationResult!
   }

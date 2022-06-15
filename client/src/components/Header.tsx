@@ -2,15 +2,15 @@
 import React, { useCallback, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import styled from 'styled-components';
-import { faCompass, faUser } from '@fortawesome/free-regular-svg-icons';
 import { faDice, faHome, faMoon, faSearch, faSun } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { darkModeVar, disableDarkMode, enableDarkMode, isLoggedInVar, logUserOut } from '../apollo';
 import LoginUser from '../hook/loginUser';
 import routes from '../routes';
 import MoreBox from './MoreBox';
+import Avatar from './Avatar';
 
 const Container = styled.div`
   width: 100%;
@@ -33,6 +33,14 @@ const Top = styled.div`
   justify-content: end;
   padding: 0 40px;
 `;
+const SHeader = styled.span`
+  margin: 0 5px;
+  font-size: 12px;
+  color: ${(props) => props.theme.fontColor};
+  opacity: 0.7;
+  cursor: pointer;
+`;
+
 const Middle = styled.div`
   color: #000;
   display: flex;
@@ -40,12 +48,14 @@ const Middle = styled.div`
   justify-content: space-between;
   padding: 20px 45px;
 `;
-const SHeader = styled.span`
-  margin: 0 5px;
-  font-size: 12px;
-  color: ${(props) => props.theme.fontColor};
-  opacity: 0.7;
-  cursor: pointer;
+
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  h1 {
+    margin-left: 10px;
+  }
 `;
 
 const SearchWrapper = styled.div`
@@ -59,6 +69,7 @@ const Search = styled.input`
   border-bottom: 1px solid ${(props) => props.theme.fontColor};
   width: 300px;
 `;
+
 const Icon = styled.span`
   margin-left: 15px;
 `;
@@ -83,13 +94,9 @@ const Bottom = styled.div`
     justify-content: space-around;
   }
 `;
-const Title = styled.div`
+const IconsContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  h1 {
-    margin-left: 10px;
-  }
 `;
 
 const Header = () => {
@@ -97,7 +104,7 @@ const Header = () => {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
   const darkMode = useReactiveVar(darkModeVar);
 
-  const loggedInUser = LoginUser();
+  const { data } = LoginUser();
 
   const onLogout = useCallback(() => {
     logUserOut(navigate);
@@ -115,6 +122,7 @@ const Header = () => {
   const onLeave = useCallback(() => {
     setMoreBox(false);
   }, []);
+
   return (
     <Container>
       <Wrapper>
@@ -127,9 +135,9 @@ const Header = () => {
               <SHeader onClick={onJoin}>회원가입</SHeader>
             </>
           )}
-
           <SHeader>개발자</SHeader>
         </Top>
+
         <Middle>
           <Title>
             <FontAwesomeIcon icon={faDice} size="2x" />
@@ -141,7 +149,7 @@ const Header = () => {
             <FontAwesomeIcon icon={faSearch} size="lg" className="searchI" />
           </SearchWrapper>
 
-          <div>
+          <IconsContainer>
             <Icon>
               <FontAwesomeIcon icon={faHome} size="lg" />
             </Icon>
@@ -153,9 +161,9 @@ const Header = () => {
               />
             </Icon>
             <Icon>
-              <FontAwesomeIcon icon={faUser} size="lg" />
+              <Avatar url={data?.me?.user?.avatar} email={data?.me.user?.email} />
             </Icon>
-          </div>
+          </IconsContainer>
         </Middle>
 
         <Bottom>

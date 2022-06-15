@@ -8,7 +8,7 @@ const resolvers: Resolvers = {
   Mutation: {
     editPost: async (
       _,
-      { id, title, caption, file },
+      { id, title, caption, file, category },
       { client, loggedInUser }
     ) => {
       try {
@@ -62,6 +62,7 @@ const resolvers: Resolvers = {
           data: {
             title,
             caption,
+            category,
             hashtags: {
               disconnect: isPost.hashtags,
               connectOrCreate: processHashtags(caption),

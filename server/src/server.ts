@@ -21,7 +21,8 @@ const startServer = async () => {
   const app: Express = express();
   app.use(graphqlUploadExpress());
   app.use(morgan("dev"));
-  app.use("/static", express.static("uploads"));
+  app.use("/static", express.static("avatars"));
+  app.use("/static", express.static("postImgs"));
 
   const httpServer: Server = createServer(app);
 
@@ -35,9 +36,6 @@ const startServer = async () => {
         webSocket: any,
         context: ConnectionContext
       ) {
-        console.log(context.request.headers.Token);
-        console.log(Token);
-
         if (Token === undefined) {
           throw new Error("권한이 없습니다.");
         }

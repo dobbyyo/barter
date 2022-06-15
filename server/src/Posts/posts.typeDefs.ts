@@ -7,6 +7,7 @@ export default gql`
     file: String!
     title: String!
     caption: String
+    category: String!
     likes: Int!
     hashtag: [Hashtag]
     isMine: Boolean!

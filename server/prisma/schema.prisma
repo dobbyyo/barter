@@ -36,6 +36,7 @@ model Post {
   file      String
   title     String
   caption   String
+  category  String
   hashtags  Hashtag[]
   likes     Like[]
   comments  Comment[]

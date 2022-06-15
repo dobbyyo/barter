@@ -13,6 +13,7 @@ const ME_QUERY = gql`
         id
         username
         avatar
+        email
       }
     }
   }
@@ -27,11 +28,11 @@ const LoginUser = () => {
   });
 
   useEffect(() => {
-    if (data?.me === null) {
+    if (data?.me === null && !error) {
       logUserOut(navigate);
     }
   }, [data]);
-  return data && data?.me.user;
+  return { data };
 };
 
 export default LoginUser;

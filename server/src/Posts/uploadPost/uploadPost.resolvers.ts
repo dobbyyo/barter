@@ -8,7 +8,7 @@ const resolvers: Resolvers = {
   Mutation: {
     uploadPost: async (
       _,
-      { file, caption, title },
+      { file, caption, title, category },
       { client, loggedInUser }
     ) => {
       try {
@@ -45,23 +45,31 @@ const resolvers: Resolvers = {
             file: postImgsUrl,
             title,
             caption,
+            category,
             user: {
               connect: {
                 id: loggedInUser.id,
               },
             },
-            ...(hashtagObj.length > 0 && {
-              hashtags: {
-                connectOrCreate: hashtagObj,
-              },
-            }),
+            ...(hashtagObj &&
+              hashtagObj.length > 0 && {
+                hashtags: {
+                  connectOrCreate: hashtagObj,
+                },
+              }),
           },
         });
         return {
           success: true,
           Post: newPost,
         };
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+        return {
+          success: false,
+          error: "실패했습니다.",
+        };
+      }
     },
   },
 };

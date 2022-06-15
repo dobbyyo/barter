@@ -9,6 +9,11 @@ export default gql`
     Post: Post
   }
   type Mutation {
-    uploadPost(file: Upload!, title: String!, caption: String): uploadResult!
+    uploadPost(
+      file: Upload!
+      title: String!
+      caption: String
+      category: String!
+    ): uploadResult!
   }
 `;

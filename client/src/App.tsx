@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
 import { ApolloProvider, useReactiveVar } from '@apollo/client';
@@ -13,6 +14,7 @@ import routes from './routes';
 import { darkTheme, GlobalStyles, whiteTheme } from './styles/styles';
 import SignUp from './page/SignUp';
 import Layout from './components/Layout';
+import Post from './page/Post';
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -34,6 +36,14 @@ function App() {
               />
               <Route path={routes.login} element={<Login />} />
               <Route path={routes.signUp} element={<SignUp />} />
+              <Route
+                path={'/post/:id'}
+                element={
+                  <Layout>
+                    <Post />
+                  </Layout>
+                }
+              />
               <Route path="/*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

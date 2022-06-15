@@ -1,11 +1,15 @@
-/* eslint-disable import/newline-after-import */
+/* eslint-disable max-len */
 /* eslint-disable no-use-before-define */
+/* eslint-disable import/newline-after-import */
+
 import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -124,6 +128,7 @@ export type MutationEditCommentArgs = {
 
 export type MutationEditPostArgs = {
   caption: Scalars['String'];
+  category: Scalars['String'];
   file?: InputMaybe<Scalars['Upload']>;
   id: Scalars['Int'];
   title: Scalars['String'];
@@ -174,6 +179,7 @@ export type MutationUnfollowUserArgs = {
 
 export type MutationUploadPostArgs = {
   caption?: InputMaybe<Scalars['String']>;
+  category: Scalars['String'];
   file: Scalars['Upload'];
   title: Scalars['String'];
 };
@@ -187,6 +193,7 @@ export type MutationResult = {
 export type Post = {
   __typename?: 'Post';
   caption?: Maybe<Scalars['String']>;
+  category: Scalars['String'];
   commentNumber: Scalars['Int'];
   comments: Array<Maybe<Comment>>;
   createdAt: Scalars['String'];
@@ -396,3 +403,242 @@ export type UploadResult = {
   error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
 };
+
+export type MeQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MeQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeResult';
+    success: boolean;
+    error?: string | null;
+    user?: {
+      __typename?: 'User';
+      id: number;
+      name: string;
+      username: string;
+      email: string;
+      bio?: string | null;
+      avatar?: string | null;
+    } | null;
+  };
+};
+
+export type AllPostsQueryVariables = Exact<{
+  page: Scalars['Int'];
+}>;
+
+export type AllPostsQuery = {
+  __typename?: 'Query';
+  allPosts: {
+    __typename?: 'allPostsResult';
+    success: boolean;
+    error?: string | null;
+    totalPages?: number | null;
+    post?: Array<{
+      __typename?: 'Post';
+      id: number;
+      file: string;
+      title: string;
+      caption?: string | null;
+      category: string;
+      likes: number;
+      isMine: boolean;
+      isLiked: boolean;
+      updatedAt: string;
+      createdAt: string;
+      commentNumber: number;
+      user: { __typename?: 'User'; id: number; name: string; username: string; email: string; avatar?: string | null };
+    } | null> | null;
+  };
+};
+
+export type SeePostQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type SeePostQuery = {
+  __typename?: 'Query';
+  seePost: {
+    __typename?: 'seePostResult';
+    success: boolean;
+    error?: string | null;
+    post?: {
+      __typename?: 'Post';
+      id: number;
+      file: string;
+      title: string;
+      caption?: string | null;
+      category: string;
+      likes: number;
+      isMine: boolean;
+      isLiked: boolean;
+      updatedAt: string;
+      createdAt: string;
+      commentNumber: number;
+      hashtag?: Array<{ __typename?: 'Hashtag'; id: number; hashtag: string } | null> | null;
+      user: { __typename?: 'User'; id: number; name: string; username: string; email: string; avatar?: string | null };
+    } | null;
+  };
+};
+
+export const MeDocument = gql`
+  query me {
+    me {
+      success
+      error
+      user {
+        id
+        name
+        username
+        email
+        bio
+        avatar
+      }
+    }
+  }
+`;
+
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+}
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+}
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const AllPostsDocument = gql`
+  query allPosts($page: Int!) {
+    allPosts(page: $page) {
+      success
+      error
+      totalPages
+      post {
+        id
+        file
+        title
+        caption
+        category
+        likes
+        isMine
+        isLiked
+        updatedAt
+        createdAt
+        commentNumber
+        user {
+          id
+          name
+          username
+          email
+          avatar
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useAllPostsQuery__
+ *
+ * To run a query within a React component, call `useAllPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllPostsQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function useAllPostsQuery(baseOptions: Apollo.QueryHookOptions<AllPostsQuery, AllPostsQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<AllPostsQuery, AllPostsQueryVariables>(AllPostsDocument, options);
+}
+export function useAllPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllPostsQuery, AllPostsQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<AllPostsQuery, AllPostsQueryVariables>(AllPostsDocument, options);
+}
+export type AllPostsQueryHookResult = ReturnType<typeof useAllPostsQuery>;
+export type AllPostsLazyQueryHookResult = ReturnType<typeof useAllPostsLazyQuery>;
+export type AllPostsQueryResult = Apollo.QueryResult<AllPostsQuery, AllPostsQueryVariables>;
+export const SeePostDocument = gql`
+  query seePost($id: Int!) {
+    seePost(id: $id) {
+      success
+      error
+      post {
+        id
+        file
+        title
+        caption
+        category
+        likes
+        isMine
+        isLiked
+        updatedAt
+        createdAt
+        commentNumber
+        hashtag {
+          id
+          hashtag
+        }
+        user {
+          id
+          name
+          username
+          email
+          avatar
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSeePostQuery__
+ *
+ * To run a query within a React component, call `useSeePostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSeePostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSeePostQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useSeePostQuery(baseOptions: Apollo.QueryHookOptions<SeePostQuery, SeePostQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SeePostQuery, SeePostQueryVariables>(SeePostDocument, options);
+}
+export function useSeePostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SeePostQuery, SeePostQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SeePostQuery, SeePostQueryVariables>(SeePostDocument, options);
+}
+export type SeePostQueryHookResult = ReturnType<typeof useSeePostQuery>;
+export type SeePostLazyQueryHookResult = ReturnType<typeof useSeePostLazyQuery>;
+export type SeePostQueryResult = Apollo.QueryResult<SeePostQuery, SeePostQueryVariables>;
