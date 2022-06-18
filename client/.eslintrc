@@ -33,6 +33,10 @@
     "react/function-component-definition": "off",
     "react/jsx-props-no-spreading": "off",
     "implicit-arrow-linebreak": "off",
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "max-len": "off",
+    "operator-linebreak": "off",
+    "function-paren-newline": "off",
+    "no-confusing-arrow": "off"
   }
 }

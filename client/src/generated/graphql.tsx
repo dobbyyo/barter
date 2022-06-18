@@ -1,7 +1,5 @@
-/* eslint-disable max-len */
-/* eslint-disable no-use-before-define */
 /* eslint-disable import/newline-after-import */
-
+/* eslint-disable no-use-before-define */
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
@@ -34,6 +32,7 @@ export type Comment = {
 export type DeleteCommentResult = {
   __typename?: 'DeleteCommentResult';
   error?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
   success: Scalars['Boolean'];
 };
 
@@ -90,7 +89,7 @@ export type Mutation = {
   deleteComment: DeleteCommentResult;
   deletePost: MutationResult;
   deleteUser: MutationResult;
-  editComment?: Maybe<MutationResult>;
+  editComment: EditCommentResult;
   editPost: MutationResult;
   editProfile: MutationResult;
   followUser: MutationResult;
@@ -336,6 +335,14 @@ export type AllPostsResult = {
 export type CreateCommentResult = {
   __typename?: 'createCommentResult';
   error?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
+  success: Scalars['Boolean'];
+};
+
+export type EditCommentResult = {
+  __typename?: 'editCommentResult';
+  error?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
   success: Scalars['Boolean'];
 };
 
@@ -402,6 +409,66 @@ export type UploadResult = {
   Post?: Maybe<Post>;
   error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+};
+
+export type JoinMutationVariables = Exact<{
+  name: Scalars['String'];
+  username: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+export type JoinMutation = {
+  __typename?: 'Mutation';
+  join: { __typename?: 'MutationResult'; success: boolean; error?: string | null };
+};
+
+export type LoginMutationVariables = Exact<{
+  email: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+export type LoginMutation = {
+  __typename?: 'Mutation';
+  login: { __typename?: 'LoginResult'; success: boolean; error?: string | null };
+};
+
+export type ToggleLikeMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type ToggleLikeMutation = {
+  __typename?: 'Mutation';
+  toggleLike: { __typename?: 'MutationResult'; success: boolean; error?: string | null };
+};
+
+export type CreateCommentMutationVariables = Exact<{
+  postId: Scalars['Int'];
+  payload: Scalars['String'];
+}>;
+
+export type CreateCommentMutation = {
+  __typename?: 'Mutation';
+  createComment: { __typename?: 'createCommentResult'; id?: number | null; success: boolean; error?: string | null };
+};
+
+export type EditCommentMutationVariables = Exact<{
+  id: Scalars['Int'];
+  payload: Scalars['String'];
+}>;
+
+export type EditCommentMutation = {
+  __typename?: 'Mutation';
+  editComment: { __typename?: 'editCommentResult'; id?: number | null; success: boolean; error?: string | null };
+};
+
+export type DeleteCommentMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type DeleteCommentMutation = {
+  __typename?: 'Mutation';
+  deleteComment: { __typename?: 'DeleteCommentResult'; id?: number | null; success: boolean; error?: string | null };
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
@@ -476,12 +543,247 @@ export type SeePostQuery = {
       updatedAt: string;
       createdAt: string;
       commentNumber: number;
+      comments: Array<{
+        __typename?: 'Comment';
+        id: number;
+        payload: string;
+        isMine: boolean;
+        createdAt: string;
+        user: { __typename?: 'User'; id: number; email: string; username: string; avatar?: string | null };
+      } | null>;
       hashtag?: Array<{ __typename?: 'Hashtag'; id: number; hashtag: string } | null> | null;
       user: { __typename?: 'User'; id: number; name: string; username: string; email: string; avatar?: string | null };
     } | null;
   };
 };
 
+export const JoinDocument = gql`
+  mutation join($name: String!, $username: String!, $email: String!, $password: String!) {
+    join(name: $name, username: $username, email: $email, password: $password) {
+      success
+      error
+    }
+  }
+`;
+export type JoinMutationFn = Apollo.MutationFunction<JoinMutation, JoinMutationVariables>;
+
+/**
+ * __useJoinMutation__
+ *
+ * To run a mutation, you first call `useJoinMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJoinMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [joinMutation, { data, loading, error }] = useJoinMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      username: // value for 'username'
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useJoinMutation(baseOptions?: Apollo.MutationHookOptions<JoinMutation, JoinMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<JoinMutation, JoinMutationVariables>(JoinDocument, options);
+}
+export type JoinMutationHookResult = ReturnType<typeof useJoinMutation>;
+export type JoinMutationResult = Apollo.MutationResult<JoinMutation>;
+export type JoinMutationOptions = Apollo.BaseMutationOptions<JoinMutation, JoinMutationVariables>;
+export const LoginDocument = gql`
+  mutation login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      success
+      error
+    }
+  }
+`;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+}
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const ToggleLikeDocument = gql`
+  mutation toggleLike($id: Int!) {
+    toggleLike(id: $id) {
+      success
+      error
+    }
+  }
+`;
+export type ToggleLikeMutationFn = Apollo.MutationFunction<ToggleLikeMutation, ToggleLikeMutationVariables>;
+
+/**
+ * __useToggleLikeMutation__
+ *
+ * To run a mutation, you first call `useToggleLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleLikeMutation, { data, loading, error }] = useToggleLikeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useToggleLikeMutation(
+  baseOptions?: Apollo.MutationHookOptions<ToggleLikeMutation, ToggleLikeMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<ToggleLikeMutation, ToggleLikeMutationVariables>(ToggleLikeDocument, options);
+}
+export type ToggleLikeMutationHookResult = ReturnType<typeof useToggleLikeMutation>;
+export type ToggleLikeMutationResult = Apollo.MutationResult<ToggleLikeMutation>;
+export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMutation, ToggleLikeMutationVariables>;
+export const CreateCommentDocument = gql`
+  mutation createComment($postId: Int!, $payload: String!) {
+    createComment(postId: $postId, payload: $payload) {
+      id
+      success
+      error
+    }
+  }
+`;
+export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
+
+/**
+ * __useCreateCommentMutation__
+ *
+ * To run a mutation, you first call `useCreateCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCommentMutation, { data, loading, error }] = useCreateCommentMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *      payload: // value for 'payload'
+ *   },
+ * });
+ */
+export function useCreateCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, options);
+}
+export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
+export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
+export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<
+  CreateCommentMutation,
+  CreateCommentMutationVariables
+>;
+export const EditCommentDocument = gql`
+  mutation editComment($id: Int!, $payload: String!) {
+    editComment(id: $id, payload: $payload) {
+      id
+      success
+      error
+    }
+  }
+`;
+export type EditCommentMutationFn = Apollo.MutationFunction<EditCommentMutation, EditCommentMutationVariables>;
+
+/**
+ * __useEditCommentMutation__
+ *
+ * To run a mutation, you first call `useEditCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editCommentMutation, { data, loading, error }] = useEditCommentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      payload: // value for 'payload'
+ *   },
+ * });
+ */
+export function useEditCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<EditCommentMutation, EditCommentMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<EditCommentMutation, EditCommentMutationVariables>(EditCommentDocument, options);
+}
+export type EditCommentMutationHookResult = ReturnType<typeof useEditCommentMutation>;
+export type EditCommentMutationResult = Apollo.MutationResult<EditCommentMutation>;
+export type EditCommentMutationOptions = Apollo.BaseMutationOptions<EditCommentMutation, EditCommentMutationVariables>;
+export const DeleteCommentDocument = gql`
+  mutation deleteComment($id: Int!) {
+    deleteComment(id: $id) {
+      id
+      success
+      error
+    }
+  }
+`;
+export type DeleteCommentMutationFn = Apollo.MutationFunction<DeleteCommentMutation, DeleteCommentMutationVariables>;
+
+/**
+ * __useDeleteCommentMutation__
+ *
+ * To run a mutation, you first call `useDeleteCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, options);
+}
+export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
+export type DeleteCommentMutationResult = Apollo.MutationResult<DeleteCommentMutation>;
+export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<
+  DeleteCommentMutation,
+  DeleteCommentMutationVariables
+>;
 export const MeDocument = gql`
   query me {
     me {
@@ -599,6 +901,18 @@ export const SeePostDocument = gql`
         updatedAt
         createdAt
         commentNumber
+        comments {
+          id
+          payload
+          isMine
+          createdAt
+          user {
+            id
+            email
+            username
+            avatar
+          }
+        }
         hashtag {
           id
           hashtag

@@ -53,6 +53,7 @@ const Title = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
   h1 {
     margin-left: 10px;
   }
@@ -122,6 +123,9 @@ const Header = () => {
   const onLeave = useCallback(() => {
     setMoreBox(false);
   }, []);
+  const onHome = useCallback(() => {
+    navigate(routes.home);
+  }, []);
 
   return (
     <Container>
@@ -139,7 +143,7 @@ const Header = () => {
         </Top>
 
         <Middle>
-          <Title>
+          <Title onClick={onHome}>
             <FontAwesomeIcon icon={faDice} size="2x" />
             <h1>Barter</h1>
           </Title>

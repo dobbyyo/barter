@@ -64,6 +64,18 @@ export const seePost = gql`
         updatedAt
         createdAt
         commentNumber
+        comments {
+          id
+          payload
+          isMine
+          createdAt
+          user {
+            id
+            email
+            username
+            avatar
+          }
+        }
         hashtag {
           id
           hashtag

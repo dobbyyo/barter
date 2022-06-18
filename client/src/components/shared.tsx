@@ -44,3 +44,18 @@ export const Button = styled.input`
   opacity: ${(props) => (props.disabled ? '0.2' : '1')};
   cursor: pointer;
 `;
+
+export const Btn = styled.div`
+  border: none;
+  background-color: ${(props) => props.theme.fontColor};
+  color: ${(props) => props.theme.bgColor};
+  width: 120px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    opacity: 0.6;
+  }
+`;

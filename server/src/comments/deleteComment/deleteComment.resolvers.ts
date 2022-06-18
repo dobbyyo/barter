@@ -16,6 +16,7 @@ const resolvers: Resolvers = {
           },
           select: {
             userId: true,
+            id: true,
           },
         });
         if (!comment) {
@@ -37,6 +38,7 @@ const resolvers: Resolvers = {
         }
         return {
           success: true,
+          id: comment.id,
         };
       } catch (err) {
         return {
