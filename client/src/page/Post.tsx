@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React from 'react';
+import React, { useCallback } from 'react';
 import { faComment, faPaperPlane, faHeart as Heart } from '@fortawesome/free-regular-svg-icons';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -150,6 +150,10 @@ const Post = () => {
     },
   });
 
+  const onToggleLike = useCallback(() => {
+    toggleLikeMutation();
+  }, []);
+
   return (
     <Container>
       <Wrapper>
@@ -184,7 +188,7 @@ const Post = () => {
             </LikeI>
           </div>
           <PostActions>
-            <PostAction onClick={toggleLikeMutation as any}>
+            <PostAction onClick={onToggleLike}>
               <FontAwesomeIcon
                 size="lg"
                 icon={data?.seePost.post?.isLiked ? faHeart : Heart}

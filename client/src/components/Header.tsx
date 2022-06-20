@@ -2,7 +2,7 @@
 import React, { useCallback, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import styled from 'styled-components';
-import { faDice, faHome, faMoon, faSearch, faSun } from '@fortawesome/free-solid-svg-icons';
+import { faDice, faHome, faMoon, faSearch, faSun, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,6 +20,8 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  position: sticky;
+  top: 0;
 `;
 const Wrapper = styled.div`
   min-width: 100%;
@@ -73,6 +75,7 @@ const Search = styled.input`
 
 const Icon = styled.span`
   margin-left: 15px;
+  cursor: pointer;
 `;
 const Bottom = styled.div`
   width: 100%;
@@ -81,6 +84,7 @@ const Bottom = styled.div`
   padding: 20px 0;
   align-items: center;
   justify-content: space-around;
+
   h1 {
     cursor: pointer;
   }
@@ -126,6 +130,9 @@ const Header = () => {
   const onHome = useCallback(() => {
     navigate(routes.home);
   }, []);
+  const onUploadPost = useCallback(() => {
+    navigate(routes.uploadPost);
+  }, []);
 
   return (
     <Container>
@@ -155,7 +162,7 @@ const Header = () => {
 
           <IconsContainer>
             <Icon>
-              <FontAwesomeIcon icon={faHome} size="lg" />
+              <FontAwesomeIcon icon={faHome} size="lg" onClick={onHome} />
             </Icon>
             <Icon>
               <FontAwesomeIcon
@@ -166,6 +173,9 @@ const Header = () => {
             </Icon>
             <Icon>
               <Avatar url={data?.me?.user?.avatar} email={data?.me.user?.email} />
+            </Icon>
+            <Icon>
+              <FontAwesomeIcon icon={faUpload} size="lg" onClick={onUploadPost} />
             </Icon>
           </IconsContainer>
         </Middle>

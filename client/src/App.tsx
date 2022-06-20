@@ -15,6 +15,7 @@ import { darkTheme, GlobalStyles, whiteTheme } from './styles/styles';
 import SignUp from './page/SignUp';
 import Layout from './components/Layout';
 import Post from './page/Post';
+import UploadPost from './page/UploadPost';
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -37,10 +38,18 @@ function App() {
               <Route path={routes.login} element={<Login />} />
               <Route path={routes.signUp} element={<SignUp />} />
               <Route
-                path={'/post/:id'}
+                path={routes.post}
                 element={
                   <Layout>
                     <Post />
+                  </Layout>
+                }
+              />
+              <Route
+                path={routes.uploadPost}
+                element={
+                  <Layout>
+                    <UploadPost />
                   </Layout>
                 }
               />

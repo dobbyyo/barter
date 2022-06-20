@@ -1,15 +1,17 @@
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { Comment, MeQuery, useDeleteCommentMutation, useEditCommentMutation } from '../generated/graphql';
+import useConfirm from '../hook/useConfirm';
 import { BoldText } from './shared';
 
 interface Props {
   comment: Comment;
   userData?: MeQuery;
+  id: number | undefined;
 }
 
 const CommentContainer = styled.div`
@@ -47,17 +49,17 @@ const Input = styled.input`
   }
 `;
 
-const PostCommentBox: FC<Props> = ({ comment, userData }) => {
+const PostCommentBox: FC<Props> = ({ comment, userData, id }) => {
   const [edit, setEdit] = useState(false);
+  const [confirmData, setConfirmData] = useState(false);
+  const ok = () => setConfirmData(true);
+  const cancel = () => setConfirmData(false);
+  const confirmDelete = useConfirm('삭제 하시겠습니까?', ok, cancel);
+
   const onEdit = useCallback(() => {
     setEdit((pre) => !pre);
   }, []);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    getValues,
-  } = useForm({
+  const { register, handleSubmit, getValues } = useForm({
     defaultValues: {
       payload: comment.payload,
     },
@@ -67,6 +69,16 @@ const PostCommentBox: FC<Props> = ({ comment, userData }) => {
       const { payload } = getValues();
       const success = result.data?.editComment?.success;
       const commentId = result.data?.editComment.id;
+
+      if (success && userData?.me) {
+        cache.modify({
+          id: `Comment:${commentId}`,
+          fields: {
+            payload: () => payload,
+          },
+        });
+        setEdit(false);
+      }
     },
   });
 
@@ -75,15 +87,49 @@ const PostCommentBox: FC<Props> = ({ comment, userData }) => {
     if (updateLoading) {
       return null;
     }
-    updateCommentMutation({
+    return updateCommentMutation({
       variables: {
         id: comment.id,
         payload,
       },
     });
-    return setEdit(false);
   }, []);
-  const [deleteCommentMutation, { loading: deleteLoading }] = useDeleteCommentMutation({});
+
+  const [deleteCommentMutation] = useDeleteCommentMutation({
+    update(cache, result) {
+      const commentId = result.data?.deleteComment.id;
+      const success = result.data?.deleteComment.success;
+
+      if (success) {
+        cache.evict({ id: `Comment:${commentId}` });
+        cache.gc();
+        cache.modify({
+          id: `Post:${id}`,
+          fields: {
+            commentNumber(prev) {
+              return prev - 1;
+            },
+          },
+        });
+      }
+    },
+  });
+
+  const onDelete = useCallback(() => {
+    if (confirmDelete) {
+      deleteCommentMutation({
+        variables: {
+          id: comment.id,
+        },
+      });
+    }
+  }, [confirmData]);
+
+  useEffect(() => {
+    if (confirmData) {
+      onDelete();
+    }
+  }, [confirmData]);
 
   return (
     <CommentContainer>
@@ -94,7 +140,7 @@ const PostCommentBox: FC<Props> = ({ comment, userData }) => {
         <Form onSubmit={handleSubmit(onUpdate)}>
           <Input type="text" {...register('payload')} autoFocus />
           <input type="submit" value="확인" />
-          <FontAwesomeIcon icon={faX} size="lg" className="icon" />
+          <FontAwesomeIcon icon={faX} size="lg" className="icon" onClick={confirmDelete} />
         </Form>
       ) : (
         <>

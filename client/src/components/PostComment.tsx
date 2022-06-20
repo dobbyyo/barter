@@ -91,7 +91,7 @@ const PostComment: FC<Props> = ({ data, id }) => {
         const newComment = {
           __typename: 'Comment',
           createdAt: `${Date.now()} ${''} `,
-          commentId,
+          id: commentId,
           isMine: true,
           payload,
           user: {
@@ -140,7 +140,7 @@ const PostComment: FC<Props> = ({ data, id }) => {
         </div>
       </TopBox>
       {data?.seePost.post?.comments.map((comment) => (
-        <PostCommentBox comment={comment as Comment} userData={userData} key={comment?.id} />
+        <PostCommentBox comment={comment as Comment} userData={userData} id={id} key={comment?.id} />
       ))}
 
       <FormWrapper>

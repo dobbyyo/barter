@@ -1,4 +1,6 @@
 import { ApolloClient, createHttpLink, InMemoryCache, makeVar } from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
+import { createUploadLink } from 'apollo-upload-client';
 import { NavigateFunction } from 'react-router-dom';
 import { setContext } from '@apollo/client/link/context';
 
@@ -28,7 +30,7 @@ export const enableDarkMode = () => {
   darkModeVar(true);
 };
 
-const httpLink = createHttpLink({
+const uploadHttpLink = createUploadLink({
   uri: 'http://localhost:4000/graphql',
 });
 
@@ -41,7 +43,16 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    console.log(`GraphQL Error ${graphQLErrors}`);
+  }
+  if (networkError) {
+    console.log(`Network Error ${networkError}`);
+  }
+});
+
 export const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat(errorLink).concat(uploadHttpLink),
   cache: new InMemoryCache(),
 });

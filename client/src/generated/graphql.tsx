@@ -1,5 +1,6 @@
-/* eslint-disable import/newline-after-import */
 /* eslint-disable no-use-before-define */
+/* eslint-disable import/newline-after-import */
+
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
@@ -433,15 +434,6 @@ export type LoginMutation = {
   login: { __typename?: 'LoginResult'; success: boolean; error?: string | null };
 };
 
-export type ToggleLikeMutationVariables = Exact<{
-  id: Scalars['Int'];
-}>;
-
-export type ToggleLikeMutation = {
-  __typename?: 'Mutation';
-  toggleLike: { __typename?: 'MutationResult'; success: boolean; error?: string | null };
-};
-
 export type CreateCommentMutationVariables = Exact<{
   postId: Scalars['Int'];
   payload: Scalars['String'];
@@ -469,6 +461,61 @@ export type DeleteCommentMutationVariables = Exact<{
 export type DeleteCommentMutation = {
   __typename?: 'Mutation';
   deleteComment: { __typename?: 'DeleteCommentResult'; id?: number | null; success: boolean; error?: string | null };
+};
+
+export type UploadPostMutationVariables = Exact<{
+  file: Scalars['Upload'];
+  title: Scalars['String'];
+  caption?: InputMaybe<Scalars['String']>;
+  category: Scalars['String'];
+}>;
+
+export type UploadPostMutation = {
+  __typename?: 'Mutation';
+  uploadPost: {
+    __typename?: 'uploadResult';
+    success: boolean;
+    error?: string | null;
+    Post?: {
+      __typename?: 'Post';
+      id: number;
+      file: string;
+      isMine: boolean;
+      user: { __typename?: 'User'; id: number; username: string; email: string; avatar?: string | null };
+      hashtag?: Array<{ __typename?: 'Hashtag'; id: number; hashtag: string } | null> | null;
+    } | null;
+  };
+};
+
+export type DeletePostMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type DeletePostMutation = {
+  __typename?: 'Mutation';
+  deletePost: { __typename?: 'MutationResult'; success: boolean; error?: string | null };
+};
+
+export type EditPostMutationVariables = Exact<{
+  id: Scalars['Int'];
+  title: Scalars['String'];
+  caption: Scalars['String'];
+  file?: InputMaybe<Scalars['Upload']>;
+  category: Scalars['String'];
+}>;
+
+export type EditPostMutation = {
+  __typename?: 'Mutation';
+  editPost: { __typename?: 'MutationResult'; success: boolean; error?: string | null };
+};
+
+export type ToggleLikeMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+export type ToggleLikeMutation = {
+  __typename?: 'Mutation';
+  toggleLike: { __typename?: 'MutationResult'; success: boolean; error?: string | null };
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
@@ -629,42 +676,6 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
-export const ToggleLikeDocument = gql`
-  mutation toggleLike($id: Int!) {
-    toggleLike(id: $id) {
-      success
-      error
-    }
-  }
-`;
-export type ToggleLikeMutationFn = Apollo.MutationFunction<ToggleLikeMutation, ToggleLikeMutationVariables>;
-
-/**
- * __useToggleLikeMutation__
- *
- * To run a mutation, you first call `useToggleLikeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useToggleLikeMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [toggleLikeMutation, { data, loading, error }] = useToggleLikeMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useToggleLikeMutation(
-  baseOptions?: Apollo.MutationHookOptions<ToggleLikeMutation, ToggleLikeMutationVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<ToggleLikeMutation, ToggleLikeMutationVariables>(ToggleLikeDocument, options);
-}
-export type ToggleLikeMutationHookResult = ReturnType<typeof useToggleLikeMutation>;
-export type ToggleLikeMutationResult = Apollo.MutationResult<ToggleLikeMutation>;
-export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMutation, ToggleLikeMutationVariables>;
 export const CreateCommentDocument = gql`
   mutation createComment($postId: Int!, $payload: String!) {
     createComment(postId: $postId, payload: $payload) {
@@ -784,6 +795,172 @@ export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<
   DeleteCommentMutation,
   DeleteCommentMutationVariables
 >;
+export const UploadPostDocument = gql`
+  mutation uploadPost($file: Upload!, $title: String!, $caption: String, $category: String!) {
+    uploadPost(file: $file, title: $title, caption: $caption, category: $category) {
+      success
+      error
+      Post {
+        id
+        file
+        isMine
+        user {
+          id
+          username
+          email
+          avatar
+        }
+        hashtag {
+          id
+          hashtag
+        }
+      }
+    }
+  }
+`;
+export type UploadPostMutationFn = Apollo.MutationFunction<UploadPostMutation, UploadPostMutationVariables>;
+
+/**
+ * __useUploadPostMutation__
+ *
+ * To run a mutation, you first call `useUploadPostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadPostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadPostMutation, { data, loading, error }] = useUploadPostMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *      title: // value for 'title'
+ *      caption: // value for 'caption'
+ *      category: // value for 'category'
+ *   },
+ * });
+ */
+export function useUploadPostMutation(
+  baseOptions?: Apollo.MutationHookOptions<UploadPostMutation, UploadPostMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UploadPostMutation, UploadPostMutationVariables>(UploadPostDocument, options);
+}
+export type UploadPostMutationHookResult = ReturnType<typeof useUploadPostMutation>;
+export type UploadPostMutationResult = Apollo.MutationResult<UploadPostMutation>;
+export type UploadPostMutationOptions = Apollo.BaseMutationOptions<UploadPostMutation, UploadPostMutationVariables>;
+export const DeletePostDocument = gql`
+  mutation deletePost($id: Int!) {
+    deletePost(id: $id) {
+      success
+      error
+    }
+  }
+`;
+export type DeletePostMutationFn = Apollo.MutationFunction<DeletePostMutation, DeletePostMutationVariables>;
+
+/**
+ * __useDeletePostMutation__
+ *
+ * To run a mutation, you first call `useDeletePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePostMutation, { data, loading, error }] = useDeletePostMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeletePostMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeletePostMutation, DeletePostMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument, options);
+}
+export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
+export type DeletePostMutationResult = Apollo.MutationResult<DeletePostMutation>;
+export type DeletePostMutationOptions = Apollo.BaseMutationOptions<DeletePostMutation, DeletePostMutationVariables>;
+export const EditPostDocument = gql`
+  mutation editPost($id: Int!, $title: String!, $caption: String!, $file: Upload, $category: String!) {
+    editPost(id: $id, title: $title, caption: $caption, file: $file, category: $category) {
+      success
+      error
+    }
+  }
+`;
+export type EditPostMutationFn = Apollo.MutationFunction<EditPostMutation, EditPostMutationVariables>;
+
+/**
+ * __useEditPostMutation__
+ *
+ * To run a mutation, you first call `useEditPostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditPostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editPostMutation, { data, loading, error }] = useEditPostMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      title: // value for 'title'
+ *      caption: // value for 'caption'
+ *      file: // value for 'file'
+ *      category: // value for 'category'
+ *   },
+ * });
+ */
+export function useEditPostMutation(
+  baseOptions?: Apollo.MutationHookOptions<EditPostMutation, EditPostMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<EditPostMutation, EditPostMutationVariables>(EditPostDocument, options);
+}
+export type EditPostMutationHookResult = ReturnType<typeof useEditPostMutation>;
+export type EditPostMutationResult = Apollo.MutationResult<EditPostMutation>;
+export type EditPostMutationOptions = Apollo.BaseMutationOptions<EditPostMutation, EditPostMutationVariables>;
+export const ToggleLikeDocument = gql`
+  mutation toggleLike($id: Int!) {
+    toggleLike(id: $id) {
+      success
+      error
+    }
+  }
+`;
+export type ToggleLikeMutationFn = Apollo.MutationFunction<ToggleLikeMutation, ToggleLikeMutationVariables>;
+
+/**
+ * __useToggleLikeMutation__
+ *
+ * To run a mutation, you first call `useToggleLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleLikeMutation, { data, loading, error }] = useToggleLikeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useToggleLikeMutation(
+  baseOptions?: Apollo.MutationHookOptions<ToggleLikeMutation, ToggleLikeMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<ToggleLikeMutation, ToggleLikeMutationVariables>(ToggleLikeDocument, options);
+}
+export type ToggleLikeMutationHookResult = ReturnType<typeof useToggleLikeMutation>;
+export type ToggleLikeMutationResult = Apollo.MutationResult<ToggleLikeMutation>;
+export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMutation, ToggleLikeMutationVariables>;
 export const MeDocument = gql`
   query me {
     me {

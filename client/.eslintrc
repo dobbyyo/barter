@@ -37,6 +37,7 @@
     "max-len": "off",
     "operator-linebreak": "off",
     "function-paren-newline": "off",
-    "no-confusing-arrow": "off"
+    "no-confusing-arrow": "off",
+    "no-alert": "off"
   }
 }
