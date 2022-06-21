@@ -38,6 +38,8 @@
     "operator-linebreak": "off",
     "function-paren-newline": "off",
     "no-confusing-arrow": "off",
-    "no-alert": "off"
+    "no-alert": "off",
+    "no-use-before-define": "off",
+    "import/newline-after-import": "off"
   }
 }

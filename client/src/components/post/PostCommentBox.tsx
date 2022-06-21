@@ -4,9 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import { Comment, MeQuery, useDeleteCommentMutation, useEditCommentMutation } from '../generated/graphql';
-import useConfirm from '../hook/useConfirm';
-import { BoldText } from './shared';
+import { Comment, MeQuery, useDeleteCommentMutation, useEditCommentMutation } from '../../generated/graphql';
+import useConfirm from '../../hook/useConfirm';
+import { BoldText } from '../shared';
 
 interface Props {
   comment: Comment;

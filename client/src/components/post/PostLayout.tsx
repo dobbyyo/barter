@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark, faComment, faHeart, faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 
-import { BoldText } from './shared';
-import Avatar from './Avatar';
-import { Post } from '../generated/graphql';
+import { BoldText } from '../shared';
+import Avatar from '../Avatar';
+import { Post } from '../../generated/graphql';
 
 const PostsContainer = styled.div`
   background-color: white;

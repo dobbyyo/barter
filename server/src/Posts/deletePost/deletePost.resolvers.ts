@@ -16,6 +16,7 @@ const resolvers: Resolvers = {
           },
           select: {
             userId: true,
+            id: true,
           },
         });
         if (!post) {
@@ -37,6 +38,7 @@ const resolvers: Resolvers = {
         }
         return {
           success: true,
+          id: post.id,
         };
       } catch (err) {
         return {

@@ -1,23 +1,27 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useCallback } from 'react';
-import { faComment, faPaperPlane, faHeart as Heart } from '@fortawesome/free-regular-svg-icons';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import React, { useCallback, useEffect, useState } from 'react';
+import { faComment, faPaperPlane, faHeart as Heart, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
+import { faHeart, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Avatar from '../components/Avatar';
-import { useSeePostQuery, useToggleLikeMutation } from '../generated/graphql';
-import PostComment from '../components/PostComment';
+import { useDeletePostMutation, useSeePostQuery, useToggleLikeMutation } from '../generated/graphql';
 
-const Container = styled.div`
+import PostComment from '../components/post/PostComment';
+import LoginUser from '../hook/loginUser';
+import EditPost from '../components/post/PostEdit';
+import useConfirm from '../hook/useConfirm';
+
+const Container = styled.div<{ openEdit: boolean }>`
   width: 100%;
-  display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   min-width: 100%;
   max-width: 100%;
+  display: ${(props) => (props.openEdit ? 'none' : 'flex')};
 `;
 
 const Wrapper = styled.div`
@@ -27,7 +31,6 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin-top: 30px;
-  /* border-top: 1px solid ${(props) => props.theme.fontColor}; */
   padding: 20px 0;
 `;
 
@@ -84,13 +87,19 @@ const Right = styled.div`
 
 const UserI = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   padding-bottom: 20px;
   span {
     margin-left: 10px;
   }
+`;
+
+const UserHeader = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const LikeI = styled.div`
@@ -119,7 +128,18 @@ const PostAction = styled.div`
 
 const Post = () => {
   const { id } = useParams();
+  const [confirmData, setConfirmData] = useState(false);
+  const ok = () => setConfirmData(true);
+  const cancel = () => setConfirmData(false);
+  const confirmDelete = useConfirm('삭제 하시겠습니까?', ok, cancel);
+
+  const [openEdit, setOpenEdit] = useState(false);
+  const onEditMove = useCallback(() => {
+    setOpenEdit((prev) => !prev);
+  }, []);
+
   const { data } = useSeePostQuery({ variables: { id: Number(id) } });
+  const { data: userData } = LoginUser();
 
   const payload = data?.seePost.post?.caption as string;
 
@@ -154,59 +174,101 @@ const Post = () => {
     toggleLikeMutation();
   }, []);
 
-  return (
-    <Container>
-      <Wrapper>
-        <Left>
-          <PostImg src={data?.seePost.post?.file} />
-        </Left>
-        <Right>
-          <div>
-            <UserI>
-              <Avatar url={data?.seePost.post?.user.avatar} email={data?.seePost.post?.user.email} />
-              <span>{data?.seePost.post?.user.username}</span>
-            </UserI>
-            <h1 className="title">{data?.seePost.post?.title}</h1>
-            <h1 className="caption">
-              {payload &&
-                payload.split(' ').map((word, index) =>
-                  /#[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\w]+/g.test(word) ? (
-                    <React.Fragment key={index}>
-                      <Link to={`/hashtags/${word}`}> {word}</Link>{' '}
-                    </React.Fragment>
-                  ) : (
-                    <React.Fragment key={index}>{word}</React.Fragment>
-                  ),
-                )}
-            </h1>
-            <h1 className="category">카테고리: {data?.seePost.post?.category}</h1>
-          </div>
-          <div>
-            <LikeI>
-              <FontAwesomeIcon size="1x" icon={faHeart} style={{ color: 'red' }} />
-              <span>{data?.seePost.post?.likes}</span>
-            </LikeI>
-          </div>
-          <PostActions>
-            <PostAction onClick={onToggleLike}>
-              <FontAwesomeIcon
-                size="lg"
-                icon={data?.seePost.post?.isLiked ? faHeart : Heart}
-                style={{ color: data?.seePost.post?.isLiked ? 'red' : 'inherit' }}
-              />
-            </PostAction>
-            <PostAction>
-              <FontAwesomeIcon size="lg" icon={faComment} />
-            </PostAction>
-            <PostAction>
-              <FontAwesomeIcon size="lg" icon={faPaperPlane} />
-            </PostAction>
-          </PostActions>
-        </Right>
-      </Wrapper>
+  const [deletePostMutation] = useDeletePostMutation({
+    update(cache, { data: deleteData }) {
+      // if (deleteData?.deletePost.success === false) {
+      //   return null;
+      // }
+      cache.evict({ id: `Post:${deleteData?.deletePost.id}` });
+      cache.gc();
+    },
+  });
 
-      <PostComment data={data} id={Number(id)} />
-    </Container>
+  const onDeletePost = useCallback(() => {
+    if (confirmData) {
+      deletePostMutation({
+        variables: { id: Number(id) },
+      });
+    }
+  }, [confirmData]);
+
+  useEffect(() => {
+    console.log(confirmData);
+    if (confirmData) {
+      onDeletePost();
+      window.location.replace('/');
+    }
+  }, [confirmData]);
+
+  return (
+    <>
+      {openEdit ? <EditPost userData={userData} post={data} /> : null}
+      <Container openEdit={openEdit}>
+        <Wrapper>
+          <Left>
+            <PostImg src={data?.seePost.post?.file} />
+          </Left>
+          <Right>
+            <div>
+              <UserI>
+                <UserHeader>
+                  <Avatar url={data?.seePost.post?.user.avatar} email={data?.seePost.post?.user.email} />
+                  <span>{data?.seePost.post?.user.username}</span>
+                </UserHeader>
+                {userData?.me.user?.id === data?.seePost.post?.user.id && (
+                  <UserHeader>
+                    <FontAwesomeIcon icon={faX} size="lg" onClick={confirmDelete} />
+                    <FontAwesomeIcon
+                      icon={faPenToSquare}
+                      size="lg"
+                      style={{ marginLeft: '10px' }}
+                      onClick={onEditMove}
+                    />
+                  </UserHeader>
+                )}
+              </UserI>
+              <h1 className="title">{data?.seePost.post?.title}</h1>
+              <h1 className="caption">
+                {payload &&
+                  payload.split(' ').map((word, index) =>
+                    /#[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\w]+/g.test(word) ? (
+                      <React.Fragment key={index}>
+                        <Link to={`/hashtags/${word}`}> {word}</Link>{' '}
+                      </React.Fragment>
+                    ) : (
+                      <React.Fragment key={index}>{word}</React.Fragment>
+                    ),
+                  )}
+              </h1>
+              <h1 className="category">카테고리: {data?.seePost.post?.category}</h1>
+            </div>
+            <div>
+              <LikeI>
+                <FontAwesomeIcon size="1x" icon={faHeart} style={{ color: 'red' }} />
+                <span>{data?.seePost.post?.likes}</span>
+              </LikeI>
+            </div>
+            <PostActions>
+              <PostAction onClick={onToggleLike}>
+                <FontAwesomeIcon
+                  size="lg"
+                  icon={data?.seePost.post?.isLiked ? faHeart : Heart}
+                  style={{ color: data?.seePost.post?.isLiked ? 'red' : 'inherit' }}
+                />
+              </PostAction>
+              <PostAction>
+                <FontAwesomeIcon size="lg" icon={faComment} />
+              </PostAction>
+              <PostAction>
+                <FontAwesomeIcon size="lg" icon={faPaperPlane} />
+              </PostAction>
+            </PostActions>
+          </Right>
+        </Wrapper>
+
+        <PostComment data={data} id={Number(id)} />
+      </Container>
+    </>
   );
 };
 

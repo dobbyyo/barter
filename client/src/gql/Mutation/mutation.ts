@@ -59,6 +59,9 @@ export const uploadPost = gql`
       Post {
         id
         file
+        title
+        caption
+        category
         isMine
         user {
           id
@@ -80,6 +83,7 @@ export const deletePost = gql`
     deletePost(id: $id) {
       success
       error
+      id
     }
   }
 `;
@@ -89,6 +93,7 @@ export const editPost = gql`
     editPost(id: $id, title: $title, caption: $caption, file: $file, category: $category) {
       success
       error
+      id
     }
   }
 `;

@@ -1,6 +1,3 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable import/newline-after-import */
-
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
@@ -88,10 +85,10 @@ export type Mutation = {
   __typename?: 'Mutation';
   createComment: CreateCommentResult;
   deleteComment: DeleteCommentResult;
-  deletePost: MutationResult;
+  deletePost: DeleteResult;
   deleteUser: MutationResult;
   editComment: EditCommentResult;
-  editPost: MutationResult;
+  editPost: EditResult;
   editProfile: MutationResult;
   followUser: MutationResult;
   join: MutationResult;
@@ -340,8 +337,22 @@ export type CreateCommentResult = {
   success: Scalars['Boolean'];
 };
 
+export type DeleteResult = {
+  __typename?: 'deleteResult';
+  error?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
+  success: Scalars['Boolean'];
+};
+
 export type EditCommentResult = {
   __typename?: 'editCommentResult';
+  error?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
+  success: Scalars['Boolean'];
+};
+
+export type EditResult = {
+  __typename?: 'editResult';
   error?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['Int']>;
   success: Scalars['Boolean'];
@@ -480,6 +491,9 @@ export type UploadPostMutation = {
       __typename?: 'Post';
       id: number;
       file: string;
+      title: string;
+      caption?: string | null;
+      category: string;
       isMine: boolean;
       user: { __typename?: 'User'; id: number; username: string; email: string; avatar?: string | null };
       hashtag?: Array<{ __typename?: 'Hashtag'; id: number; hashtag: string } | null> | null;
@@ -493,7 +507,7 @@ export type DeletePostMutationVariables = Exact<{
 
 export type DeletePostMutation = {
   __typename?: 'Mutation';
-  deletePost: { __typename?: 'MutationResult'; success: boolean; error?: string | null };
+  deletePost: { __typename?: 'deleteResult'; success: boolean; error?: string | null; id?: number | null };
 };
 
 export type EditPostMutationVariables = Exact<{
@@ -506,7 +520,7 @@ export type EditPostMutationVariables = Exact<{
 
 export type EditPostMutation = {
   __typename?: 'Mutation';
-  editPost: { __typename?: 'MutationResult'; success: boolean; error?: string | null };
+  editPost: { __typename?: 'editResult'; success: boolean; error?: string | null; id?: number | null };
 };
 
 export type ToggleLikeMutationVariables = Exact<{
@@ -803,6 +817,9 @@ export const UploadPostDocument = gql`
       Post {
         id
         file
+        title
+        caption
+        category
         isMine
         user {
           id
@@ -854,6 +871,7 @@ export const DeletePostDocument = gql`
     deletePost(id: $id) {
       success
       error
+      id
     }
   }
 `;
@@ -890,6 +908,7 @@ export const EditPostDocument = gql`
     editPost(id: $id, title: $title, caption: $caption, file: $file, category: $category) {
       success
       error
+      id
     }
   }
 `;

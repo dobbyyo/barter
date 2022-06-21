@@ -54,8 +54,8 @@ model Hashtag {
 
 model Like {
   id        Int      @id @default(autoincrement())
-  post      Post     @relation(fields: [postId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id] , onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   postId    Int
   userId    Int
   createdAt DateTime @default(now())
@@ -67,8 +67,8 @@ model Like {
 model Comment {
   id        Int      @id @default(autoincrement())
   payload   String
-  post      Post     @relation(fields: [postId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   postId    Int
   userId    Int
   createdAt DateTime @default(now())

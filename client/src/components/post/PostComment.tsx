@@ -1,12 +1,12 @@
 import React, { FC, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import { Comment, SeePostQuery, useCreateCommentMutation } from '../generated/graphql';
-import LoginUser from '../hook/loginUser';
+import { Comment, SeePostQuery, useCreateCommentMutation } from '../../generated/graphql';
+import LoginUser from '../../hook/loginUser';
 
-import FormError from './auth/FormError';
+import FormError from '../auth/FormError';
 import PostCommentBox from './PostCommentBox';
-import { BoldText, Btn } from './shared';
+import { BoldText, Btn } from '../shared';
 
 const CommentWrapper = styled.div`
   margin-top: 20px;

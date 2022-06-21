@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { isLoggedInVar } from '../apollo';
 import AuthLayout from '../components/auth/AuthLayout';
 import FormBox from '../components/auth/FormBox';
+import FormError from '../components/auth/FormError';
 import FormOption from '../components/auth/FormOption';
 import PageTitle from '../components/PageTitle';
 import { Button, Input } from '../components/shared';
@@ -19,18 +20,6 @@ import routes from '../routes';
 const PostImg = styled.img`
   width: 80%;
   padding: 20px 0;
-`;
-const Container = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
-
-const Wrapper = styled.div`
-  width: 100%;
-  max-width: 500px;
 `;
 
 const UploadPost = () => {
@@ -44,7 +33,6 @@ const UploadPost = () => {
       navigate(routes.home);
     }
   }, [isLoggedIn]);
-  console.log(isLoggedIn);
 
   const {
     register,
@@ -55,6 +43,7 @@ const UploadPost = () => {
   } = useForm({
     mode: 'onChange',
   });
+
   const watchingPhotoFile = watch('file');
   const [photoPreview, setPhotoPreview] = useState<string>('');
   const [uploadPostMutation, { loading }] = useUploadPostMutation({
@@ -62,21 +51,30 @@ const UploadPost = () => {
       if (data?.uploadPost.success === false) {
         return null;
       }
-
-      const newPost = data?.uploadPost.Post;
-
-      cache.modify({
-        id: 'ROOT_QUERY',
-        fields: {
-          total(prev) {
-            return prev + 1;
+      if (data?.uploadPost.success && userData?.me) {
+        const newPost = {
+          __typename: 'Post',
+          id: data?.uploadPost.Post?.id,
+          file: data?.uploadPost.Post?.file,
+          title: data?.uploadPost.Post?.title,
+          caption: data?.uploadPost.Post?.caption,
+          category: data?.uploadPost.Post?.category,
+          user: {
+            ...userData?.me,
           },
-          allPosts(prev) {
-            return [...prev];
+        };
+
+        cache.modify({
+          id: `Post:${userData?.me.user?.id}`,
+          fields: {
+            total: (total) => total + 1,
+            Post(prev) {
+              return [newPost, ...prev];
+            },
           },
-        },
-      });
-      navigate(-1);
+        });
+        navigate(-1);
+      }
     },
   });
 
@@ -112,18 +110,24 @@ const UploadPost = () => {
             {...register('file', { required: '이미지를 입력해주세요' })}
             hasError={Boolean(errors?.file?.message)}
           />
+          <FormError message={errors?.file?.message} />
+
           <Input
             type="title"
             placeholder="제목"
             {...register('title', { required: '제목을 입력해주세요' })}
             hasError={Boolean(errors?.title?.message)}
           />
+          <FormError message={errors?.title?.message} />
+
           <Input
             type="caption"
             placeholder="설명"
             {...register('caption', { required: '설명을 입력해주세요' })}
             hasError={Boolean(errors?.caption?.message)}
           />
+          <FormError message={errors?.caption?.message} />
+
           <FormOption
             register={register}
             name="category"
@@ -145,6 +149,8 @@ const UploadPost = () => {
               '기타 중고물품',
             ]}
           />
+          <FormError message={errors?.category?.message} />
+
           {photoPreview && <PostImg src={photoPreview} alt="img" />}
           <Button type="submit" value={loading ? '로딩...' : '업로드'} disabled={!isValid || loading} />
         </form>

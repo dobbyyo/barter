@@ -6,11 +6,11 @@ import { faDice, faHome, faMoon, faSearch, faSun, faUpload } from '@fortawesome/
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 
-import { darkModeVar, disableDarkMode, enableDarkMode, isLoggedInVar, logUserOut } from '../apollo';
-import LoginUser from '../hook/loginUser';
-import routes from '../routes';
+import { darkModeVar, disableDarkMode, enableDarkMode, isLoggedInVar, logUserOut } from '../../apollo';
+import LoginUser from '../../hook/loginUser';
+import routes from '../../routes';
 import MoreBox from './MoreBox';
-import Avatar from './Avatar';
+import Avatar from '../Avatar';
 
 const Container = styled.div`
   width: 100%;

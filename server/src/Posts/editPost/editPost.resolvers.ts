@@ -72,6 +72,7 @@ const resolvers: Resolvers = {
         });
         return {
           success: true,
+          id: isPost.id,
         };
       } catch (err) {
         return {

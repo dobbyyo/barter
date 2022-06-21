@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { useAllPostsQuery } from '../generated/graphql';
-import PostLayout from '../components/PostLayout';
+import PostLayout from '../components/post/PostLayout';
 
 const Container = styled.div`
   width: 100%;

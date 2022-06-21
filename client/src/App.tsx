@@ -13,7 +13,7 @@ import NotFound from './page/NotFound';
 import routes from './routes';
 import { darkTheme, GlobalStyles, whiteTheme } from './styles/styles';
 import SignUp from './page/SignUp';
-import Layout from './components/Layout';
+import Layout from './components/header/Layout';
 import Post from './page/Post';
 import UploadPost from './page/UploadPost';
 
@@ -53,6 +53,7 @@ function App() {
                   </Layout>
                 }
               />
+
               <Route path="/*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
