@@ -18,7 +18,7 @@ const resolvers: Resolvers = {
             error: "로그인이 필요합니다.",
           };
         }
-        console.log(process.env.NODE_ENV);
+        console.log("ava" + avatar);
         let avatarUrl = null;
 
         if ((process.env.NODE_ENV = "development" && avatar)) {
@@ -40,7 +40,7 @@ const resolvers: Resolvers = {
         if (newPassword) {
           hashPassword = await bcrypt.hash(newPassword, 10);
         }
-        const updateUser = await client.user.update({
+        await client.user.update({
           where: { id: loggedInUser.id },
           data: {
             name,
@@ -51,19 +51,13 @@ const resolvers: Resolvers = {
             ...(avatarUrl && { avatar: avatarUrl }),
           },
         });
-        if (updateUser.id) {
-          return {
-            success: true,
-          };
-        } else {
-          return {
-            success: false,
-            error: "업데이트에 실패했습니다.",
-          };
-        }
+        return {
+          success: true,
+        };
       } catch (err) {
-        console.log(loggedInUser);
-        console.log(err);
+        console.log("a" + avatar);
+
+        console.log("err" + err);
         return {
           success: false,
           error: "업데이트에 실패했습니다.",

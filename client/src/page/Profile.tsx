@@ -13,10 +13,10 @@ import EditForm from '../components/user/EditForm';
 import { Post, useFollowUserMutation, useSeeProfileQuery, useUnfollowUserMutation } from '../generated/graphql';
 import LoginUser from '../hook/loginUser';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ editUser: boolean }>`
   width: 100%;
   margin-top: 50px;
-  display: flex;
+  display: ${(props) => (props.editUser ? 'none' : 'display')};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -152,48 +152,54 @@ const Profile = () => {
   }, []);
 
   return (
-    <Wrapper>
+    <>
       {editUser && <EditForm userData={userData} />}
-      {seeUsername && <PageTitle title={ProfileLoading ? 'Loading..' : `${seeUsername}의 프로필`} />}
-      <Header>
-        <Avatar url={ProfileData?.seeProfile?.user?.avatar} email={ProfileData?.seeProfile.user?.email} large={true} />
-        <Column>
-          <Row>
-            {isLoggedIn && (
-              <>
-                <Username>{ProfileData?.seeProfile?.user?.username}</Username>
-                {ProfileData?.seeProfile.user?.isMe && <ProfileBtn onClick={onEdit}>유저 수정</ProfileBtn>}
-                {ProfileData?.seeProfile.user?.isFollowing ? (
-                  <ProfileBtn onClick={onUnFollow}>언팔로워</ProfileBtn>
-                ) : (
-                  <ProfileBtn onClick={onFollow}>팔로워</ProfileBtn>
-                )}
-              </>
-            )}
-          </Row>
-          <Row>
-            <List>
-              <Item>
-                <span>
-                  <Value>{ProfileData?.seeProfile?.user?.totalFollowers}</Value> followers
-                </span>
-              </Item>
-              <Item>
-                <span>
-                  <Value>{ProfileData?.seeProfile?.user?.totalFollowings}</Value> following
-                </span>
-              </Item>
-            </List>
-          </Row>
-          <Row>
-            <Name>{ProfileData?.seeProfile?.user?.name}</Name>
-          </Row>
-          <Row>{ProfileData?.seeProfile?.user?.bio}</Row>
-        </Column>
-      </Header>
+      <Wrapper editUser={editUser}>
+        {seeUsername && <PageTitle title={ProfileLoading ? 'Loading..' : `${seeUsername}의 프로필`} />}
+        <Header>
+          <Avatar
+            url={ProfileData?.seeProfile?.user?.avatar}
+            email={ProfileData?.seeProfile.user?.email}
+            large={true}
+          />
+          <Column>
+            <Row>
+              {isLoggedIn && (
+                <>
+                  <Username>{ProfileData?.seeProfile?.user?.username}</Username>
+                  {ProfileData?.seeProfile.user?.isMe && <ProfileBtn onClick={onEdit}>유저 수정</ProfileBtn>}
+                  {ProfileData?.seeProfile.user?.isFollowing ? (
+                    <ProfileBtn onClick={onUnFollow}>언팔로워</ProfileBtn>
+                  ) : (
+                    <ProfileBtn onClick={onFollow}>팔로워</ProfileBtn>
+                  )}
+                </>
+              )}
+            </Row>
+            <Row>
+              <List>
+                <Item>
+                  <span>
+                    <Value>{ProfileData?.seeProfile?.user?.totalFollowers}</Value> followers
+                  </span>
+                </Item>
+                <Item>
+                  <span>
+                    <Value>{ProfileData?.seeProfile?.user?.totalFollowings}</Value> following
+                  </span>
+                </Item>
+              </List>
+            </Row>
+            <Row>
+              <Name>{ProfileData?.seeProfile?.user?.name}</Name>
+            </Row>
+            <Row>{ProfileData?.seeProfile?.user?.bio}</Row>
+          </Column>
+        </Header>
 
-      <Grid>{arrPost && arrPost.map((post) => <PostLayout key={post?.id} post={post as Post} />)}</Grid>
-    </Wrapper>
+        <Grid>{arrPost && arrPost.map((post) => <PostLayout key={post?.id} post={post as Post} />)}</Grid>
+      </Wrapper>
+    </>
   );
 };
 

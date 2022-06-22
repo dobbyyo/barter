@@ -173,11 +173,13 @@ const Header = () => {
               />
             </Icon>
 
-            <Icon>
-              <Link to={`users/${data?.me.user?.username}`}>
-                <Avatar url={data?.me?.user?.avatar} email={data?.me.user?.email} />
-              </Link>
-            </Icon>
+            {data?.me.user && (
+              <Icon>
+                <Link to={`users/${data?.me.user?.username}`}>
+                  <Avatar url={data?.me?.user?.avatar} email={data?.me.user?.email} />
+                </Link>
+              </Icon>
+            )}
             <Icon>
               <FontAwesomeIcon icon={faUpload} size="lg" onClick={onUploadPost} />
             </Icon>
