@@ -1,8 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { useAllPostsQuery } from '../generated/graphql';
+import { Post, useAllPostsQuery } from '../generated/graphql';
 import PostLayout from '../components/post/PostLayout';
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Container = styled.div`
   width: 100%;
@@ -10,6 +17,9 @@ const Container = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   padding: 20px 80px;
+  align-items: center;
+  max-width: 1200px;
+  min-width: 1200px;
 `;
 
 const Title = styled.div`
@@ -60,14 +70,14 @@ const Home = () => {
   const arr = Array.from({ length: Number(total) }, () => 0);
 
   return (
-    <>
+    <Wrapper>
       <Title>
         <h1>New</h1>
         <span>Barter 게시글</span>
       </Title>
       <Container>
         {data?.allPosts.post?.map((post) => (
-          <PostLayout post={post} key={post?.id} />
+          <PostLayout key={post?.id} post={post as Post} />
         ))}
       </Container>
       <MoveWrapper>
@@ -75,7 +85,7 @@ const Home = () => {
           <MovePage key={v}>{i + 1}</MovePage>
         ))} */}
       </MoveWrapper>
-    </>
+    </Wrapper>
   );
 };
 

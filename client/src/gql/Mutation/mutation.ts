@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 
+// 유저
 export const join = gql`
   mutation join($name: String!, $username: String!, $email: String!, $password: String!) {
     join(name: $name, username: $username, email: $email, password: $password) {
@@ -12,6 +13,49 @@ export const join = gql`
 export const login = gql`
   mutation login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
+      success
+      error
+    }
+  }
+`;
+
+export const deleteUser = gql`
+  mutation deleteUser($email: String!, $password: String!) {
+    deleteUser(email: $email, password: $password) {
+      success
+      error
+    }
+  }
+`;
+
+export const editProfile = gql`
+  mutation editProfile(
+    $name: String
+    $username: String
+    $email: String
+    $password: String
+    $bio: String
+    $avatar: Upload
+  ) {
+    editProfile(name: $name, username: $username, email: $email, password: $password, bio: $bio, avatar: $avatar) {
+      success
+      error
+    }
+  }
+`;
+
+export const followUser = gql`
+  mutation followUser($username: String!) {
+    followUser(username: $username) {
+      success
+      error
+    }
+  }
+`;
+
+export const unfollowUser = gql`
+  mutation unfollowUser($username: String!) {
+    unfollowUser(username: $username) {
       success
       error
     }

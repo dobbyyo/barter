@@ -41,5 +41,6 @@ export default {
       });
       return Boolean(exists);
     },
+    posts: ({ id }) => client.user.findUnique({ where: { id } }).posts(),
   },
 };

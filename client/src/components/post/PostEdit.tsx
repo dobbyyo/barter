@@ -99,7 +99,7 @@ const EditPost: FC<Props> = ({ userData, post }) => {
 
   return (
     <AuthLayout>
-      <PageTitle title="게시글 업로드" />
+      <PageTitle title="게시글 수정" />
       <FormBox>
         <div>
           <FontAwesomeIcon icon={faDice} size="3x" />

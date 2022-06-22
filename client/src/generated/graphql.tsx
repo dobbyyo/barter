@@ -316,6 +316,7 @@ export type User = {
   isFollowing: Scalars['Boolean'];
   isMe: Scalars['Boolean'];
   name: Scalars['String'];
+  posts?: Maybe<Array<Maybe<Post>>>;
   totalFollowers: Scalars['Int'];
   totalFollowings: Scalars['Int'];
   updatedAt: Scalars['String'];
@@ -445,6 +446,48 @@ export type LoginMutation = {
   login: { __typename?: 'LoginResult'; success: boolean; error?: string | null };
 };
 
+export type DeleteUserMutationVariables = Exact<{
+  email: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+export type DeleteUserMutation = {
+  __typename?: 'Mutation';
+  deleteUser: { __typename?: 'MutationResult'; success: boolean; error?: string | null };
+};
+
+export type EditProfileMutationVariables = Exact<{
+  name?: InputMaybe<Scalars['String']>;
+  username?: InputMaybe<Scalars['String']>;
+  email?: InputMaybe<Scalars['String']>;
+  password?: InputMaybe<Scalars['String']>;
+  bio?: InputMaybe<Scalars['String']>;
+  avatar?: InputMaybe<Scalars['Upload']>;
+}>;
+
+export type EditProfileMutation = {
+  __typename?: 'Mutation';
+  editProfile: { __typename?: 'MutationResult'; success: boolean; error?: string | null };
+};
+
+export type FollowUserMutationVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+export type FollowUserMutation = {
+  __typename?: 'Mutation';
+  followUser: { __typename?: 'MutationResult'; success: boolean; error?: string | null };
+};
+
+export type UnfollowUserMutationVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+export type UnfollowUserMutation = {
+  __typename?: 'Mutation';
+  unfollowUser: { __typename?: 'MutationResult'; success: boolean; error?: string | null };
+};
+
 export type CreateCommentMutationVariables = Exact<{
   postId: Scalars['Int'];
   payload: Scalars['String'];
@@ -548,6 +591,8 @@ export type MeQuery = {
       email: string;
       bio?: string | null;
       avatar?: string | null;
+      totalFollowers: number;
+      totalFollowings: number;
     } | null;
   };
 };
@@ -576,7 +621,15 @@ export type AllPostsQuery = {
       updatedAt: string;
       createdAt: string;
       commentNumber: number;
-      user: { __typename?: 'User'; id: number; name: string; username: string; email: string; avatar?: string | null };
+      user: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        username: string;
+        email: string;
+        bio?: string | null;
+        avatar?: string | null;
+      };
     } | null> | null;
   };
 };
@@ -610,10 +663,75 @@ export type SeePostQuery = {
         payload: string;
         isMine: boolean;
         createdAt: string;
-        user: { __typename?: 'User'; id: number; email: string; username: string; avatar?: string | null };
+        user: {
+          __typename?: 'User';
+          id: number;
+          name: string;
+          username: string;
+          email: string;
+          bio?: string | null;
+          avatar?: string | null;
+        };
       } | null>;
       hashtag?: Array<{ __typename?: 'Hashtag'; id: number; hashtag: string } | null> | null;
-      user: { __typename?: 'User'; id: number; name: string; username: string; email: string; avatar?: string | null };
+      user: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        username: string;
+        email: string;
+        bio?: string | null;
+        avatar?: string | null;
+      };
+    } | null;
+  };
+};
+
+export type SeeProfileQueryVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+export type SeeProfileQuery = {
+  __typename?: 'Query';
+  seeProfile: {
+    __typename?: 'seeProfileResult';
+    success: boolean;
+    error?: string | null;
+    user?: {
+      __typename?: 'User';
+      id: number;
+      name: string;
+      username: string;
+      email: string;
+      bio?: string | null;
+      avatar?: string | null;
+      totalFollowings: number;
+      totalFollowers: number;
+      isMe: boolean;
+      isFollowing: boolean;
+      posts?: Array<{
+        __typename?: 'Post';
+        id: number;
+        file: string;
+        title: string;
+        caption?: string | null;
+        category: string;
+        likes: number;
+        isMine: boolean;
+        isLiked: boolean;
+        updatedAt: string;
+        createdAt: string;
+        commentNumber: number;
+        user: {
+          __typename?: 'User';
+          id: number;
+          name: string;
+          username: string;
+          email: string;
+          bio?: string | null;
+          avatar?: string | null;
+        };
+      } | null> | null;
     } | null;
   };
 };
@@ -690,6 +808,166 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const DeleteUserDocument = gql`
+  mutation deleteUser($email: String!, $password: String!) {
+    deleteUser(email: $email, password: $password) {
+      success
+      error
+    }
+  }
+`;
+export type DeleteUserMutationFn = Apollo.MutationFunction<DeleteUserMutation, DeleteUserMutationVariables>;
+
+/**
+ * __useDeleteUserMutation__
+ *
+ * To run a mutation, you first call `useDeleteUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteUserMutation, { data, loading, error }] = useDeleteUserMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useDeleteUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteUserMutation, DeleteUserMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, options);
+}
+export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
+export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
+export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
+export const EditProfileDocument = gql`
+  mutation editProfile(
+    $name: String
+    $username: String
+    $email: String
+    $password: String
+    $bio: String
+    $avatar: Upload
+  ) {
+    editProfile(name: $name, username: $username, email: $email, password: $password, bio: $bio, avatar: $avatar) {
+      success
+      error
+    }
+  }
+`;
+export type EditProfileMutationFn = Apollo.MutationFunction<EditProfileMutation, EditProfileMutationVariables>;
+
+/**
+ * __useEditProfileMutation__
+ *
+ * To run a mutation, you first call `useEditProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editProfileMutation, { data, loading, error }] = useEditProfileMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      username: // value for 'username'
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *      bio: // value for 'bio'
+ *      avatar: // value for 'avatar'
+ *   },
+ * });
+ */
+export function useEditProfileMutation(
+  baseOptions?: Apollo.MutationHookOptions<EditProfileMutation, EditProfileMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<EditProfileMutation, EditProfileMutationVariables>(EditProfileDocument, options);
+}
+export type EditProfileMutationHookResult = ReturnType<typeof useEditProfileMutation>;
+export type EditProfileMutationResult = Apollo.MutationResult<EditProfileMutation>;
+export type EditProfileMutationOptions = Apollo.BaseMutationOptions<EditProfileMutation, EditProfileMutationVariables>;
+export const FollowUserDocument = gql`
+  mutation followUser($username: String!) {
+    followUser(username: $username) {
+      success
+      error
+    }
+  }
+`;
+export type FollowUserMutationFn = Apollo.MutationFunction<FollowUserMutation, FollowUserMutationVariables>;
+
+/**
+ * __useFollowUserMutation__
+ *
+ * To run a mutation, you first call `useFollowUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useFollowUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [followUserMutation, { data, loading, error }] = useFollowUserMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useFollowUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<FollowUserMutation, FollowUserMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<FollowUserMutation, FollowUserMutationVariables>(FollowUserDocument, options);
+}
+export type FollowUserMutationHookResult = ReturnType<typeof useFollowUserMutation>;
+export type FollowUserMutationResult = Apollo.MutationResult<FollowUserMutation>;
+export type FollowUserMutationOptions = Apollo.BaseMutationOptions<FollowUserMutation, FollowUserMutationVariables>;
+export const UnfollowUserDocument = gql`
+  mutation unfollowUser($username: String!) {
+    unfollowUser(username: $username) {
+      success
+      error
+    }
+  }
+`;
+export type UnfollowUserMutationFn = Apollo.MutationFunction<UnfollowUserMutation, UnfollowUserMutationVariables>;
+
+/**
+ * __useUnfollowUserMutation__
+ *
+ * To run a mutation, you first call `useUnfollowUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnfollowUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unfollowUserMutation, { data, loading, error }] = useUnfollowUserMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useUnfollowUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<UnfollowUserMutation, UnfollowUserMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UnfollowUserMutation, UnfollowUserMutationVariables>(UnfollowUserDocument, options);
+}
+export type UnfollowUserMutationHookResult = ReturnType<typeof useUnfollowUserMutation>;
+export type UnfollowUserMutationResult = Apollo.MutationResult<UnfollowUserMutation>;
+export type UnfollowUserMutationOptions = Apollo.BaseMutationOptions<
+  UnfollowUserMutation,
+  UnfollowUserMutationVariables
+>;
 export const CreateCommentDocument = gql`
   mutation createComment($postId: Int!, $payload: String!) {
     createComment(postId: $postId, payload: $payload) {
@@ -992,6 +1270,8 @@ export const MeDocument = gql`
         email
         bio
         avatar
+        totalFollowers
+        totalFollowings
       }
     }
   }
@@ -1046,6 +1326,7 @@ export const AllPostsDocument = gql`
           name
           username
           email
+          bio
           avatar
         }
       }
@@ -1104,8 +1385,10 @@ export const SeePostDocument = gql`
           createdAt
           user {
             id
-            email
+            name
             username
+            email
+            bio
             avatar
           }
         }
@@ -1118,6 +1401,7 @@ export const SeePostDocument = gql`
           name
           username
           email
+          bio
           avatar
         }
       }
@@ -1152,3 +1436,74 @@ export function useSeePostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Se
 export type SeePostQueryHookResult = ReturnType<typeof useSeePostQuery>;
 export type SeePostLazyQueryHookResult = ReturnType<typeof useSeePostLazyQuery>;
 export type SeePostQueryResult = Apollo.QueryResult<SeePostQuery, SeePostQueryVariables>;
+export const SeeProfileDocument = gql`
+  query seeProfile($username: String!) {
+    seeProfile(username: $username) {
+      success
+      error
+      user {
+        id
+        name
+        username
+        email
+        bio
+        avatar
+        totalFollowings
+        totalFollowers
+        isMe
+        isFollowing
+        posts {
+          id
+          file
+          title
+          caption
+          category
+          likes
+          isMine
+          isLiked
+          updatedAt
+          createdAt
+          commentNumber
+          user {
+            id
+            name
+            username
+            email
+            bio
+            avatar
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSeeProfileQuery__
+ *
+ * To run a query within a React component, call `useSeeProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSeeProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSeeProfileQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useSeeProfileQuery(baseOptions: Apollo.QueryHookOptions<SeeProfileQuery, SeeProfileQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SeeProfileQuery, SeeProfileQueryVariables>(SeeProfileDocument, options);
+}
+export function useSeeProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SeeProfileQuery, SeeProfileQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SeeProfileQuery, SeeProfileQueryVariables>(SeeProfileDocument, options);
+}
+export type SeeProfileQueryHookResult = ReturnType<typeof useSeeProfileQuery>;
+export type SeeProfileLazyQueryHookResult = ReturnType<typeof useSeeProfileLazyQuery>;
+export type SeeProfileQueryResult = Apollo.QueryResult<SeeProfileQuery, SeeProfileQueryVariables>;

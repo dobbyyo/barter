@@ -16,6 +16,7 @@ import SignUp from './page/SignUp';
 import Layout from './components/header/Layout';
 import Post from './page/Post';
 import UploadPost from './page/UploadPost';
+import Profile from './page/Profile';
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -53,7 +54,14 @@ function App() {
                   </Layout>
                 }
               />
-
+              <Route
+                path={routes.profile}
+                element={
+                  <Layout>
+                    <Profile />
+                  </Layout>
+                }
+              />
               <Route path="/*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

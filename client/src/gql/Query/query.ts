@@ -12,6 +12,8 @@ export const ME_QUERY = gql`
         email
         bio
         avatar
+        totalFollowers
+        totalFollowings
       }
     }
   }
@@ -40,6 +42,7 @@ export const allPosts = gql`
           name
           username
           email
+          bio
           avatar
         }
       }
@@ -71,8 +74,10 @@ export const seePost = gql`
           createdAt
           user {
             id
-            email
+            name
             username
+            email
+            bio
             avatar
           }
         }
@@ -85,7 +90,50 @@ export const seePost = gql`
           name
           username
           email
+          bio
           avatar
+        }
+      }
+    }
+  }
+`;
+
+export const seeProfile = gql`
+  query seeProfile($username: String!) {
+    seeProfile(username: $username) {
+      success
+      error
+      user {
+        id
+        name
+        username
+        email
+        bio
+        avatar
+        totalFollowings
+        totalFollowers
+        isMe
+        isFollowing
+        posts {
+          id
+          file
+          title
+          caption
+          category
+          likes
+          isMine
+          isLiked
+          updatedAt
+          createdAt
+          commentNumber
+          user {
+            id
+            name
+            username
+            email
+            bio
+            avatar
+          }
         }
       }
     }

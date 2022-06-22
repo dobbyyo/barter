@@ -4,7 +4,7 @@ import { useReactiveVar } from '@apollo/client';
 import styled from 'styled-components';
 import { faDice, faHome, faMoon, faSearch, faSun, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { darkModeVar, disableDarkMode, enableDarkMode, isLoggedInVar, logUserOut } from '../../apollo';
 import LoginUser from '../../hook/loginUser';
@@ -22,6 +22,7 @@ const Container = styled.div`
   justify-content: center;
   position: sticky;
   top: 0;
+  z-index: 999;
 `;
 const Wrapper = styled.div`
   min-width: 100%;
@@ -171,8 +172,11 @@ const Header = () => {
                 onClick={darkMode ? disableDarkMode : enableDarkMode}
               />
             </Icon>
+
             <Icon>
-              <Avatar url={data?.me?.user?.avatar} email={data?.me.user?.email} />
+              <Link to={`users/${data?.me.user?.username}`}>
+                <Avatar url={data?.me?.user?.avatar} email={data?.me.user?.email} />
+              </Link>
             </Icon>
             <Icon>
               <FontAwesomeIcon icon={faUpload} size="lg" onClick={onUploadPost} />

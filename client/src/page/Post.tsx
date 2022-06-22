@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { faComment, faPaperPlane, faHeart as Heart, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { faHeart, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Avatar from '../components/Avatar';

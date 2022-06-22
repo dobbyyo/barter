@@ -4,7 +4,7 @@ const routes = {
   signUp: '/signUp',
   post: '/post/:id',
   uploadPost: '/uploadPost',
-  editPost: '/editPost',
+  profile: '/users/:username',
 };
 
 export default routes;
