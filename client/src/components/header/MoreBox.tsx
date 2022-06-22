@@ -1,4 +1,7 @@
-import React, { FC } from 'react';
+/* eslint-disable react/no-array-index-key */
+
+import React, { FC, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -21,22 +24,33 @@ interface Props {
   onMouseLeave: () => void;
 }
 const MoreBox: FC<Props> = ({ onMouseLeave }) => {
+  const navigate = useNavigate();
+  const categoryArr = [
+    '디저털기기',
+    '생활가전',
+    '가구_인테리어',
+    '유야',
+    '생활_가공식품',
+    '스포츠_래저',
+    '여성패션_잡화',
+    '남성패션_잡화',
+    '개임_취미',
+    '뷰티_미용',
+    '반려동물용품',
+    '도서_티켓_음반',
+    '식물',
+    '기타 중고물품',
+  ];
+  const onCategoryPosts = useCallback((id: number) => {
+    navigate(`/category/${categoryArr[id]}/1`);
+  }, []);
   return (
     <Container onMouseLeave={onMouseLeave}>
-      <Name>디지털기기</Name>
-      <Name>생활가전</Name>
-      <Name>가구/인테리어</Name>
-      <Name>유야</Name>
-      <Name>생활/가공식품</Name>
-      <Name>스포츠/래저</Name>
-      <Name>여성패션/잡화</Name>
-      <Name>남성패션/잡화</Name>
-      <Name>개임/취미</Name>
-      <Name>뷰티/미용</Name>
-      <Name>반려동물용품</Name>
-      <Name>도서/티켓/음반</Name>
-      <Name>식물</Name>
-      <Name>기타 중고물품</Name>
+      {categoryArr.map((v, i) => (
+        <Name key={i} onClick={() => onCategoryPosts(i)}>
+          {v}
+        </Name>
+      ))}
     </Container>
   );
 };

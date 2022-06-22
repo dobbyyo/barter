@@ -1,10 +1,9 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useCallback } from 'react';
-import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
-
-import { Post, useAllPostsQuery } from '../generated/graphql';
+import styled from 'styled-components';
 import PostLayout from '../components/post/PostLayout';
+import { Post, useCategoryPostQuery } from '../generated/graphql';
 
 const Wrapper = styled.div`
   display: flex;
@@ -78,13 +77,14 @@ const PageBtn = styled.button`
   }
 `;
 
-const Home = () => {
+const Category = () => {
   const navigate = useNavigate();
-  const { page } = useParams();
+  const { category, page } = useParams();
+  console.log(category);
+  const { data } = useCategoryPostQuery({ variables: { category: String(category), page: Number(page) } });
+  console.log(data);
 
-  const { data } = useAllPostsQuery({ variables: { page: Number(page) } });
-
-  const total = data?.allPosts.totalPages;
+  const total = data?.categoryPost.totalPages;
 
   const arr = Array.from({ length: Number(total) }, () => 0);
 
@@ -104,7 +104,7 @@ const Home = () => {
         <span>Barter 게시글</span>
       </Title>
       <Container>
-        {data?.allPosts.post?.map((post) => (
+        {data?.categoryPost.posts?.map((post) => (
           <PostLayout key={post?.id} post={post as Post} />
         ))}
       </Container>
@@ -119,4 +119,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Category;

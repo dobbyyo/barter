@@ -57,7 +57,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate(routes.home);
+      navigate('/home/1');
     }
   }, [isLoggedIn]);
 
@@ -89,7 +89,7 @@ const Login = () => {
       }
       if (success && token) {
         logInUser(token);
-        navigate(routes.home);
+        navigate('/home/1');
       }
     },
   });

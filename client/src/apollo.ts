@@ -18,7 +18,7 @@ export const logUserOut = (navigate: NavigateFunction) => {
   localStorage.removeItem(TOKEN);
   isLoggedInVar(false);
   navigate(routes.home, { replace: true });
-  window.location.replace('/');
+  window.location.replace('/home/1');
 };
 
 export const darkModeVar = makeVar(Boolean(localStorage.getItem(DARK_MODE)));

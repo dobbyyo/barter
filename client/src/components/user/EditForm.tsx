@@ -4,7 +4,7 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { faDice } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { logUserOut } from '../../apollo';
 import { MeQuery, useDeleteUserMutation, useEditProfileMutation } from '../../generated/graphql';
@@ -59,7 +59,6 @@ const Btn = styled.div<{ Active: boolean }>`
 const EditForm: FC<Props> = ({ userData }) => {
   const [passwordActive, setPasswordActive] = useState(false);
   const [profileActive, setProfileActive] = useState(true);
-  const { username: seeUsername } = useParams();
   const navigate = useNavigate();
   const [confirmData, setConfirmData] = useState(false);
   const ok = () => setConfirmData(true);
@@ -71,8 +70,6 @@ const EditForm: FC<Props> = ({ userData }) => {
     handleSubmit,
     getValues,
     watch,
-    setError,
-    clearErrors,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',

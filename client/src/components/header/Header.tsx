@@ -1,4 +1,6 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
+/* eslint-disable react/no-array-index-key */
+
 import React, { useCallback, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import styled from 'styled-components';
@@ -86,9 +88,6 @@ const Bottom = styled.div`
   align-items: center;
   justify-content: space-around;
 
-  h1 {
-    cursor: pointer;
-  }
   .left {
     width: 10%;
     text-align: center;
@@ -100,6 +99,11 @@ const Bottom = styled.div`
     justify-content: space-around;
   }
 `;
+
+const H1 = styled.div`
+  cursor: pointer;
+`;
+
 const IconsContainer = styled.div`
   display: flex;
   align-items: center;
@@ -129,11 +133,16 @@ const Header = () => {
     setMoreBox(false);
   }, []);
   const onHome = useCallback(() => {
-    navigate(routes.home);
+    navigate('/home/1');
   }, []);
   const onUploadPost = useCallback(() => {
     navigate(routes.uploadPost);
   }, []);
+  const onCategoryPosts = useCallback((id: number) => {
+    navigate(`/category/${categoryArr[id]}/1`);
+  }, []);
+
+  const categoryArr = ['디저털기기', '생활가전', '가구_인테리어', '유야', '생활_가공식품'];
 
   return (
     <Container>
@@ -175,7 +184,7 @@ const Header = () => {
 
             {data?.me.user && (
               <Icon>
-                <Link to={`users/${data?.me.user?.username}`}>
+                <Link to={`/users/${data?.me.user?.username}`}>
                   <Avatar url={data?.me?.user?.avatar} email={data?.me.user?.email} />
                 </Link>
               </Icon>
@@ -191,13 +200,12 @@ const Header = () => {
             <h1>카테고리+</h1>
           </div>
           <div className="right">
-            <h1>디지털기기</h1>
-            <h1>생활가전</h1>
-            <h1>가구/인테리어</h1>
-            <h1>유야</h1>
-            <h1>생활/가공식품</h1>
-            <h1>스포츠/래저</h1>
-            <h1 onMouseOver={onOver}>더보기</h1>
+            {categoryArr.map((v, i) => (
+              <H1 key={i} onClick={() => onCategoryPosts(i)}>
+                {v}
+              </H1>
+            ))}
+            <H1 onMouseOver={onOver}>더보기</H1>
           </div>
         </Bottom>
         {moreBox && <MoreBox onMouseLeave={onLeave} />}

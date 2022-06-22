@@ -208,6 +208,7 @@ export type Post = {
 export type Query = {
   __typename?: 'Query';
   allPosts: AllPostsResult;
+  categoryPost: CategoryPostResult;
   me: MeResult;
   searchPosts: SearchPostsResult;
   searchUsers: SearchResult;
@@ -223,6 +224,11 @@ export type Query = {
 };
 
 export type QueryAllPostsArgs = {
+  page: Scalars['Int'];
+};
+
+export type QueryCategoryPostArgs = {
+  category: Scalars['String'];
   page: Scalars['Int'];
 };
 
@@ -327,6 +333,14 @@ export type AllPostsResult = {
   __typename?: 'allPostsResult';
   error?: Maybe<Scalars['String']>;
   post?: Maybe<Array<Maybe<Post>>>;
+  success: Scalars['Boolean'];
+  totalPages?: Maybe<Scalars['Int']>;
+};
+
+export type CategoryPostResult = {
+  __typename?: 'categoryPostResult';
+  error?: Maybe<Scalars['String']>;
+  posts?: Maybe<Array<Maybe<Post>>>;
   success: Scalars['Boolean'];
   totalPages?: Maybe<Scalars['Int']>;
 };
@@ -733,6 +747,44 @@ export type SeeProfileQuery = {
         };
       } | null> | null;
     } | null;
+  };
+};
+
+export type CategoryPostQueryVariables = Exact<{
+  category: Scalars['String'];
+  page: Scalars['Int'];
+}>;
+
+export type CategoryPostQuery = {
+  __typename?: 'Query';
+  categoryPost: {
+    __typename?: 'categoryPostResult';
+    success: boolean;
+    error?: string | null;
+    totalPages?: number | null;
+    posts?: Array<{
+      __typename?: 'Post';
+      id: number;
+      file: string;
+      title: string;
+      caption?: string | null;
+      category: string;
+      likes: number;
+      isMine: boolean;
+      isLiked: boolean;
+      updatedAt: string;
+      createdAt: string;
+      commentNumber: number;
+      user: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        username: string;
+        email: string;
+        bio?: string | null;
+        avatar?: string | null;
+      };
+    } | null> | null;
   };
 };
 
@@ -1507,3 +1559,66 @@ export function useSeeProfileLazyQuery(
 export type SeeProfileQueryHookResult = ReturnType<typeof useSeeProfileQuery>;
 export type SeeProfileLazyQueryHookResult = ReturnType<typeof useSeeProfileLazyQuery>;
 export type SeeProfileQueryResult = Apollo.QueryResult<SeeProfileQuery, SeeProfileQueryVariables>;
+export const CategoryPostDocument = gql`
+  query categoryPost($category: String!, $page: Int!) {
+    categoryPost(category: $category, page: $page) {
+      success
+      error
+      totalPages
+      posts {
+        id
+        file
+        title
+        caption
+        category
+        likes
+        isMine
+        isLiked
+        updatedAt
+        createdAt
+        commentNumber
+        user {
+          id
+          name
+          username
+          email
+          bio
+          avatar
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCategoryPostQuery__
+ *
+ * To run a query within a React component, call `useCategoryPostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCategoryPostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCategoryPostQuery({
+ *   variables: {
+ *      category: // value for 'category'
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function useCategoryPostQuery(
+  baseOptions: Apollo.QueryHookOptions<CategoryPostQuery, CategoryPostQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<CategoryPostQuery, CategoryPostQueryVariables>(CategoryPostDocument, options);
+}
+export function useCategoryPostLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<CategoryPostQuery, CategoryPostQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<CategoryPostQuery, CategoryPostQueryVariables>(CategoryPostDocument, options);
+}
+export type CategoryPostQueryHookResult = ReturnType<typeof useCategoryPostQuery>;
+export type CategoryPostLazyQueryHookResult = ReturnType<typeof useCategoryPostLazyQuery>;
+export type CategoryPostQueryResult = Apollo.QueryResult<CategoryPostQuery, CategoryPostQueryVariables>;

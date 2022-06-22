@@ -139,3 +139,34 @@ export const seeProfile = gql`
     }
   }
 `;
+
+export const categoryPost = gql`
+  query categoryPost($category: String!, $page: Int!) {
+    categoryPost(category: $category, page: $page) {
+      success
+      error
+      totalPages
+      posts {
+        id
+        file
+        title
+        caption
+        category
+        likes
+        isMine
+        isLiked
+        updatedAt
+        createdAt
+        commentNumber
+        user {
+          id
+          name
+          username
+          email
+          bio
+          avatar
+        }
+      }
+    }
+  }
+`;
