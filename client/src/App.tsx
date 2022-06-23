@@ -18,6 +18,8 @@ import Post from './page/Post';
 import UploadPost from './page/UploadPost';
 import Profile from './page/Profile';
 import Category from './page/Category';
+import HashtagPost from './page/HashtagPosts';
+import TitlePosts from './page/TitlePosts';
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -68,6 +70,22 @@ function App() {
                 element={
                   <Layout>
                     <Category />
+                  </Layout>
+                }
+              />
+              <Route
+                path={routes.hashtagPost}
+                element={
+                  <Layout>
+                    <HashtagPost />
+                  </Layout>
+                }
+              />
+              <Route
+                path={routes.titlePost}
+                element={
+                  <Layout>
+                    <TitlePosts />
                   </Layout>
                 }
               />

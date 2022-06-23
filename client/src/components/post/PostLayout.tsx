@@ -87,7 +87,7 @@ const PostLayout = ({ post }: Props) => {
           {post.caption?.split(' ').map((word, index) =>
             /#[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\w]+/g.test(word) ? (
               <React.Fragment key={index}>
-                <Link to={`/hashtags/${word}`}>
+                <Link to={`/hashtag/${word.replace('#', '')}/1`}>
                   {' '}
                   <h1>{word}</h1>
                 </Link>{' '}

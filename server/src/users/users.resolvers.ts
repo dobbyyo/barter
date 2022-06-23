@@ -42,5 +42,6 @@ export default {
       return Boolean(exists);
     },
     posts: ({ id }) => client.user.findUnique({ where: { id } }).posts(),
+    totalPosts: ({ id }) => client.post.count({ where: { userId: id } }),
   },
 };

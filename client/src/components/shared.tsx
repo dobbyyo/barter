@@ -59,3 +59,11 @@ export const Btn = styled.div`
     opacity: 0.6;
   }
 `;
+
+export const ErrorSpan = styled.span`
+  width: 100%;
+  padding: 50px;
+  display: flex;
+  justify-content: center;
+  font-size: 25px;
+`;

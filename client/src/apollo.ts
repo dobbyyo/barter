@@ -1,3 +1,4 @@
+/* eslint-disable default-param-last */
 import { ApolloClient, createHttpLink, InMemoryCache, makeVar } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { createUploadLink } from 'apollo-upload-client';
@@ -59,6 +60,40 @@ export const client = new ApolloClient({
     typePolicies: {
       User: {
         keyFields: (obj) => `User:${obj.username}`,
+      },
+      Query: {
+        fields: {
+          seeFollowers: {
+            keyArgs: false,
+            merge(existing, incoming) {
+              if (existing) {
+                console.log(existing.followers);
+                const result = {
+                  ...existing,
+                  ...incoming,
+                  followers: [...existing.followers, ...incoming.followers],
+                };
+                return result;
+              }
+              return incoming;
+            },
+          },
+          seeFollowings: {
+            keyArgs: false,
+            merge(existing, incoming) {
+              if (existing) {
+                console.log(existing.followings);
+                const result = {
+                  ...existing,
+                  ...incoming,
+                  followings: [...existing.followings, ...incoming.followings],
+                };
+                return result;
+              }
+              return incoming;
+            },
+          },
+        },
       },
     },
   }),

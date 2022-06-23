@@ -11,6 +11,7 @@ export default gql`
     bio: String
     avatar: String
     posts: [Post]
+    totalPosts: Int
     followings: [User]
     followers: [User]
     totalFollowings: Int!

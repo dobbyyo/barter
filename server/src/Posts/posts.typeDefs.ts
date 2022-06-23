@@ -20,8 +20,8 @@ export default gql`
   type Hashtag {
     id: Int!
     hashtag: String!
-    posts(page: Int!): [Post]
-    totalPosts: Int!
+    # posts(page: Int!): [Post]
+    # totalPosts: Int!
     createdAt: String!
     updatedAt: String!
   }

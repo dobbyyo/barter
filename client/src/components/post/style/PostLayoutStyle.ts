@@ -68,7 +68,7 @@ export const Icons = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 80%;
+  height: 55%;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
   opacity: 0;

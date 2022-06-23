@@ -1,17 +1,30 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable react/jsx-boolean-value */
 /* eslint-disable no-unneeded-ternary */
 import { useReactiveVar } from '@apollo/client';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { useInView } from 'react-intersection-observer';
+
 import { isLoggedInVar } from '../apollo';
 import Avatar from '../components/Avatar';
 import PageTitle from '../components/PageTitle';
 import PostLayout from '../components/post/PostLayout';
-import { BoldText, Btn } from '../components/shared';
+import { BoldText, Btn, ErrorSpan } from '../components/shared';
 import EditForm from '../components/user/EditForm';
-import { Post, useFollowUserMutation, useSeeProfileQuery, useUnfollowUserMutation } from '../generated/graphql';
+
+import {
+  Post,
+  useFollowUserMutation,
+  User,
+  useSeeFollowersQuery,
+  useSeeFollowingsQuery,
+  useSeeProfileQuery,
+  useUnfollowUserMutation,
+} from '../generated/graphql';
 import LoginUser from '../hook/loginUser';
+import FollowLayout from '../components/user/FollowLayout';
 
 const Wrapper = styled.div<{ editUser: boolean }>`
   width: 100%;
@@ -57,11 +70,27 @@ const Grid = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   padding: 20px 80px;
-  max-width: 1200px;
-  min-width: 1200px;
   align-items: center;
 `;
-
+const FollowWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 30px;
+  .box {
+    padding: 10px 0;
+    width: 40%;
+    display: flex;
+    border-bottom: 1px solid ${(props) => props.theme.borderColor};
+    align-items: center;
+    justify-content: start;
+    .username {
+      margin: 0 20px;
+    }
+  }
+`;
 const ProfileBtn = styled(Btn)`
   height: 30px;
   margin-left: 10px;
@@ -71,12 +100,14 @@ const Profile = () => {
   const { username } = useParams();
   const { data: userData } = LoginUser();
   const isLoggedIn = useReactiveVar(isLoggedInVar);
+  const { ref, inView } = useInView();
 
   const { data: ProfileData, loading: ProfileLoading } = useSeeProfileQuery({
     variables: {
       username: String(username),
     },
   });
+
   const [followUserMutation] = useFollowUserMutation({
     update(cache, { data }) {
       if (data?.followUser.success === false) {
@@ -151,54 +182,139 @@ const Profile = () => {
     setEditUser((cur) => !cur);
   }, []);
 
+  const {
+    data: seeFollowingsData,
+    fetchMore: seeFollowingsMore,
+    loading: followingLoading,
+  } = useSeeFollowingsQuery({
+    variables: { username: String(username) },
+  });
+  const {
+    data: seeFollowerData,
+    fetchMore: seeFollowersMore,
+    loading: followerLoading,
+  } = useSeeFollowersQuery({
+    variables: { username: String(username) },
+  });
+
+  const [toN, setToN] = useState(1);
+  const [more, setMore] = useState(true);
+  const moreCall = useCallback(async (): Promise<void> => {
+    const a = seeFollowerData?.seeFollowers.followers;
+    const lastId = a && a[a.length - 1]?.id;
+    const total = seeFollowerData?.seeFollowers.totalPages;
+
+    if (total === toN) {
+      setMore(false);
+    }
+
+    if (inView && !followerLoading && more) {
+      await seeFollowersMore({ variables: { lastId } });
+      setToN((prev) => prev + 1);
+    }
+  }, [inView, followerLoading]);
+
+  useEffect(() => {
+    moreCall();
+  }, [inView, followerLoading]);
+
+  const [followers, setFollowers] = useState(false);
+  const [following, setFollowing] = useState(false);
+  const [seePost, setSeePost] = useState(true);
+
+  const onChangeFollowers = useCallback(() => {
+    setFollowers(true);
+    setFollowing(false);
+    setSeePost(false);
+  }, [setFollowers, setFollowing, setSeePost]);
+  const onChangeFollowing = useCallback(() => {
+    setFollowers(false);
+    setFollowing(true);
+    setSeePost(false);
+  }, [setFollowers, setFollowing, setSeePost]);
+  const onChangePosts = useCallback(() => {
+    setFollowers(false);
+    setFollowing(false);
+    setSeePost(true);
+  }, [setFollowers, setFollowing, setSeePost]);
+
   return (
     <>
       {editUser && <EditForm userData={userData} />}
-      <Wrapper editUser={editUser}>
-        {seeUsername && <PageTitle title={ProfileLoading ? 'Loading..' : `${seeUsername}의 프로필`} />}
-        <Header>
-          <Avatar
-            url={ProfileData?.seeProfile?.user?.avatar}
-            email={ProfileData?.seeProfile.user?.email}
-            large={true}
-          />
-          <Column>
-            <Row>
-              {isLoggedIn && (
-                <>
-                  <Username>{ProfileData?.seeProfile?.user?.username}</Username>
-                  {ProfileData?.seeProfile.user?.isMe && <ProfileBtn onClick={onEdit}>유저 수정</ProfileBtn>}
-                  {ProfileData?.seeProfile.user?.isFollowing ? (
-                    <ProfileBtn onClick={onUnFollow}>언팔로워</ProfileBtn>
-                  ) : (
-                    <ProfileBtn onClick={onFollow}>팔로워</ProfileBtn>
-                  )}
-                </>
-              )}
-            </Row>
-            <Row>
-              <List>
-                <Item>
-                  <span>
-                    <Value>{ProfileData?.seeProfile?.user?.totalFollowers}</Value> followers
-                  </span>
-                </Item>
-                <Item>
-                  <span>
-                    <Value>{ProfileData?.seeProfile?.user?.totalFollowings}</Value> following
-                  </span>
-                </Item>
-              </List>
-            </Row>
-            <Row>
-              <Name>{ProfileData?.seeProfile?.user?.name}</Name>
-            </Row>
-            <Row>{ProfileData?.seeProfile?.user?.bio}</Row>
-          </Column>
-        </Header>
+      {seeUsername ? (
+        <Wrapper editUser={editUser}>
+          {seeUsername && <PageTitle title={ProfileLoading ? 'Loading..' : `${seeUsername}의 프로필`} />}
 
-        <Grid>{arrPost && arrPost.map((post) => <PostLayout key={post?.id} post={post as Post} />)}</Grid>
-      </Wrapper>
+          <Header>
+            <Avatar
+              url={ProfileData?.seeProfile?.user?.avatar}
+              email={ProfileData?.seeProfile.user?.email}
+              large={true}
+            />
+            <Column>
+              <Row>
+                {isLoggedIn && (
+                  <>
+                    <Username>{ProfileData?.seeProfile?.user?.username}</Username>
+                    {ProfileData?.seeProfile.user?.isMe && <ProfileBtn onClick={onEdit}>유저 수정</ProfileBtn>}
+                    {ProfileData?.seeProfile.user?.isFollowing ? (
+                      <ProfileBtn onClick={onUnFollow}>언팔로워</ProfileBtn>
+                    ) : (
+                      <ProfileBtn onClick={onFollow}>팔로워</ProfileBtn>
+                    )}
+                  </>
+                )}
+              </Row>
+              <Row>
+                <List>
+                  <Item onClick={onChangeFollowers}>
+                    <span>
+                      <Value>{ProfileData?.seeProfile?.user?.totalFollowers}</Value> 팔로워
+                    </span>
+                  </Item>
+                  <Item onClick={onChangeFollowing}>
+                    <span>
+                      <Value>{ProfileData?.seeProfile?.user?.totalFollowings}</Value> 팔로윙
+                    </span>
+                  </Item>
+                  <Item onClick={onChangePosts}>
+                    <span>
+                      <Value>{ProfileData?.seeProfile?.user?.totalPosts}</Value> 포스터
+                    </span>
+                  </Item>
+                </List>
+              </Row>
+              <Row>
+                <Name>{ProfileData?.seeProfile?.user?.name}</Name>
+              </Row>
+              <Row>{ProfileData?.seeProfile?.user?.bio}</Row>
+            </Column>
+          </Header>
+          {followers && (
+            <FollowWrapper>
+              {seeFollowerData?.seeFollowers.followers?.map((v) => (
+                <FollowLayout data={v as User} key={v?.id} />
+              ))}
+            </FollowWrapper>
+          )}
+
+          {following && (
+            <FollowWrapper>
+              {seeFollowingsData?.seeFollowings?.followings?.map((v) => (
+                <FollowLayout data={v as User} key={v?.id} />
+              ))}
+            </FollowWrapper>
+          )}
+
+          <div ref={!followerLoading ? ref : undefined} style={{ marginBottom: '20px' }} />
+
+          {seePost && (
+            <Grid>{arrPost && arrPost.map((post) => <PostLayout key={post?.id} post={post as Post} />)}</Grid>
+          )}
+        </Wrapper>
+      ) : (
+        <ErrorSpan>{ProfileData?.seeProfile.error}</ErrorSpan>
+      )}
     </>
   );
 };

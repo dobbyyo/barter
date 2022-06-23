@@ -39,13 +39,7 @@ export type Hashtag = {
   createdAt: Scalars['String'];
   hashtag: Scalars['String'];
   id: Scalars['Int'];
-  posts?: Maybe<Array<Maybe<Post>>>;
-  totalPosts: Scalars['Int'];
   updatedAt: Scalars['String'];
-};
-
-export type HashtagPostsArgs = {
-  page: Scalars['Int'];
 };
 
 export type Like = {
@@ -215,7 +209,7 @@ export type Query = {
   seeFeed: SeeFeedResult;
   seeFollowers: SeeFollowersResult;
   seeFollowings?: Maybe<SeeFollowingsResult>;
-  seeHashtag?: Maybe<Hashtag>;
+  seeHashtag: SeeHashtagResult;
   seeLikes: SeeLikesResult;
   seePost: SeePostResult;
   seeProfile: SeeProfileResult;
@@ -246,17 +240,18 @@ export type QuerySeeFeedArgs = {
 };
 
 export type QuerySeeFollowersArgs = {
-  page: Scalars['Int'];
+  lastId?: InputMaybe<Scalars['Int']>;
   username: Scalars['String'];
 };
 
 export type QuerySeeFollowingsArgs = {
-  page: Scalars['Int'];
+  lastId?: InputMaybe<Scalars['Int']>;
   username: Scalars['String'];
 };
 
 export type QuerySeeHashtagArgs = {
-  hashtag: Scalars['String'];
+  keyword: Scalars['String'];
+  page: Scalars['Int'];
 };
 
 export type QuerySeeLikesArgs = {
@@ -325,6 +320,7 @@ export type User = {
   posts?: Maybe<Array<Maybe<Post>>>;
   totalFollowers: Scalars['Int'];
   totalFollowings: Scalars['Int'];
+  totalPosts?: Maybe<Scalars['Int']>;
   updatedAt: Scalars['String'];
   username: Scalars['String'];
 };
@@ -392,6 +388,14 @@ export type SeeFeedResult = {
   __typename?: 'seeFeedResult';
   error?: Maybe<Scalars['String']>;
   post?: Maybe<Array<Maybe<Post>>>;
+  success: Scalars['Boolean'];
+  totalPages?: Maybe<Scalars['Int']>;
+};
+
+export type SeeHashtagResult = {
+  __typename?: 'seeHashtagResult';
+  error?: Maybe<Scalars['String']>;
+  posts?: Maybe<Array<Maybe<Post>>>;
   success: Scalars['Boolean'];
   totalPages?: Maybe<Scalars['Int']>;
 };
@@ -723,6 +727,7 @@ export type SeeProfileQuery = {
       totalFollowers: number;
       isMe: boolean;
       isFollowing: boolean;
+      totalPosts?: number | null;
       posts?: Array<{
         __typename?: 'Post';
         id: number;
@@ -784,6 +789,187 @@ export type CategoryPostQuery = {
         bio?: string | null;
         avatar?: string | null;
       };
+    } | null> | null;
+  };
+};
+
+export type SeeHashtagQueryVariables = Exact<{
+  keyword: Scalars['String'];
+  page: Scalars['Int'];
+}>;
+
+export type SeeHashtagQuery = {
+  __typename?: 'Query';
+  seeHashtag: {
+    __typename?: 'seeHashtagResult';
+    success: boolean;
+    error?: string | null;
+    totalPages?: number | null;
+    posts?: Array<{
+      __typename?: 'Post';
+      id: number;
+      file: string;
+      title: string;
+      caption?: string | null;
+      category: string;
+      likes: number;
+      isMine: boolean;
+      isLiked: boolean;
+      updatedAt: string;
+      createdAt: string;
+      commentNumber: number;
+      user: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        username: string;
+        email: string;
+        bio?: string | null;
+        avatar?: string | null;
+      };
+    } | null> | null;
+  };
+};
+
+export type SearchPostsQueryVariables = Exact<{
+  keyword: Scalars['String'];
+  page: Scalars['Int'];
+}>;
+
+export type SearchPostsQuery = {
+  __typename?: 'Query';
+  searchPosts: {
+    __typename?: 'searchPostsResult';
+    success: boolean;
+    error?: string | null;
+    totalPages?: number | null;
+    posts?: Array<{
+      __typename?: 'Post';
+      id: number;
+      file: string;
+      title: string;
+      caption?: string | null;
+      category: string;
+      likes: number;
+      isMine: boolean;
+      isLiked: boolean;
+      updatedAt: string;
+      createdAt: string;
+      commentNumber: number;
+      user: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        username: string;
+        email: string;
+        bio?: string | null;
+        avatar?: string | null;
+      };
+    } | null> | null;
+  };
+};
+
+export type SearchUsersQueryVariables = Exact<{
+  keyword: Scalars['String'];
+}>;
+
+export type SearchUsersQuery = {
+  __typename?: 'Query';
+  searchUsers: {
+    __typename?: 'searchResult';
+    success: boolean;
+    error?: string | null;
+    user?: Array<{
+      __typename?: 'User';
+      id: number;
+      name: string;
+      username: string;
+      email: string;
+      bio?: string | null;
+      avatar?: string | null;
+      totalFollowings: number;
+      totalFollowers: number;
+      isMe: boolean;
+      isFollowing: boolean;
+      posts?: Array<{
+        __typename?: 'Post';
+        id: number;
+        file: string;
+        title: string;
+        caption?: string | null;
+        category: string;
+        likes: number;
+        isMine: boolean;
+        isLiked: boolean;
+        updatedAt: string;
+        createdAt: string;
+        commentNumber: number;
+        user: {
+          __typename?: 'User';
+          id: number;
+          name: string;
+          username: string;
+          email: string;
+          bio?: string | null;
+          avatar?: string | null;
+        };
+      } | null> | null;
+    } | null> | null;
+  };
+};
+
+export type SeeFollowingsQueryVariables = Exact<{
+  username: Scalars['String'];
+  lastId?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type SeeFollowingsQuery = {
+  __typename?: 'Query';
+  seeFollowings?: {
+    __typename?: 'SeeFollowingsResult';
+    success: boolean;
+    error?: string | null;
+    totalPages?: number | null;
+    followings?: Array<{
+      __typename?: 'User';
+      id: number;
+      name: string;
+      username: string;
+      email: string;
+      bio?: string | null;
+      avatar?: string | null;
+      totalFollowings: number;
+      totalFollowers: number;
+      isMe: boolean;
+      isFollowing: boolean;
+    } | null> | null;
+  } | null;
+};
+
+export type SeeFollowersQueryVariables = Exact<{
+  username: Scalars['String'];
+  lastId?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type SeeFollowersQuery = {
+  __typename?: 'Query';
+  seeFollowers: {
+    __typename?: 'SeeFollowersResult';
+    success: boolean;
+    error?: string | null;
+    totalPages?: number | null;
+    followers?: Array<{
+      __typename?: 'User';
+      id: number;
+      name: string;
+      username: string;
+      email: string;
+      bio?: string | null;
+      avatar?: string | null;
+      totalFollowings: number;
+      totalFollowers: number;
+      isMe: boolean;
+      isFollowing: boolean;
     } | null> | null;
   };
 };
@@ -1504,6 +1690,7 @@ export const SeeProfileDocument = gql`
         totalFollowers
         isMe
         isFollowing
+        totalPosts
         posts {
           id
           file
@@ -1622,3 +1809,304 @@ export function useCategoryPostLazyQuery(
 export type CategoryPostQueryHookResult = ReturnType<typeof useCategoryPostQuery>;
 export type CategoryPostLazyQueryHookResult = ReturnType<typeof useCategoryPostLazyQuery>;
 export type CategoryPostQueryResult = Apollo.QueryResult<CategoryPostQuery, CategoryPostQueryVariables>;
+export const SeeHashtagDocument = gql`
+  query seeHashtag($keyword: String!, $page: Int!) {
+    seeHashtag(keyword: $keyword, page: $page) {
+      success
+      error
+      totalPages
+      posts {
+        id
+        file
+        title
+        caption
+        category
+        likes
+        isMine
+        isLiked
+        updatedAt
+        createdAt
+        commentNumber
+        user {
+          id
+          name
+          username
+          email
+          bio
+          avatar
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSeeHashtagQuery__
+ *
+ * To run a query within a React component, call `useSeeHashtagQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSeeHashtagQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSeeHashtagQuery({
+ *   variables: {
+ *      keyword: // value for 'keyword'
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function useSeeHashtagQuery(baseOptions: Apollo.QueryHookOptions<SeeHashtagQuery, SeeHashtagQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SeeHashtagQuery, SeeHashtagQueryVariables>(SeeHashtagDocument, options);
+}
+export function useSeeHashtagLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SeeHashtagQuery, SeeHashtagQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SeeHashtagQuery, SeeHashtagQueryVariables>(SeeHashtagDocument, options);
+}
+export type SeeHashtagQueryHookResult = ReturnType<typeof useSeeHashtagQuery>;
+export type SeeHashtagLazyQueryHookResult = ReturnType<typeof useSeeHashtagLazyQuery>;
+export type SeeHashtagQueryResult = Apollo.QueryResult<SeeHashtagQuery, SeeHashtagQueryVariables>;
+export const SearchPostsDocument = gql`
+  query searchPosts($keyword: String!, $page: Int!) {
+    searchPosts(keyword: $keyword, page: $page) {
+      success
+      error
+      totalPages
+      posts {
+        id
+        file
+        title
+        caption
+        category
+        likes
+        isMine
+        isLiked
+        updatedAt
+        createdAt
+        commentNumber
+        user {
+          id
+          name
+          username
+          email
+          bio
+          avatar
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSearchPostsQuery__
+ *
+ * To run a query within a React component, call `useSearchPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchPostsQuery({
+ *   variables: {
+ *      keyword: // value for 'keyword'
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function useSearchPostsQuery(baseOptions: Apollo.QueryHookOptions<SearchPostsQuery, SearchPostsQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SearchPostsQuery, SearchPostsQueryVariables>(SearchPostsDocument, options);
+}
+export function useSearchPostsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SearchPostsQuery, SearchPostsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SearchPostsQuery, SearchPostsQueryVariables>(SearchPostsDocument, options);
+}
+export type SearchPostsQueryHookResult = ReturnType<typeof useSearchPostsQuery>;
+export type SearchPostsLazyQueryHookResult = ReturnType<typeof useSearchPostsLazyQuery>;
+export type SearchPostsQueryResult = Apollo.QueryResult<SearchPostsQuery, SearchPostsQueryVariables>;
+export const SearchUsersDocument = gql`
+  query searchUsers($keyword: String!) {
+    searchUsers(keyword: $keyword) {
+      success
+      error
+      user {
+        id
+        name
+        username
+        email
+        bio
+        avatar
+        totalFollowings
+        totalFollowers
+        isMe
+        isFollowing
+        posts {
+          id
+          file
+          title
+          caption
+          category
+          likes
+          isMine
+          isLiked
+          updatedAt
+          createdAt
+          commentNumber
+          user {
+            id
+            name
+            username
+            email
+            bio
+            avatar
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSearchUsersQuery__
+ *
+ * To run a query within a React component, call `useSearchUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchUsersQuery({
+ *   variables: {
+ *      keyword: // value for 'keyword'
+ *   },
+ * });
+ */
+export function useSearchUsersQuery(baseOptions: Apollo.QueryHookOptions<SearchUsersQuery, SearchUsersQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SearchUsersQuery, SearchUsersQueryVariables>(SearchUsersDocument, options);
+}
+export function useSearchUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SearchUsersQuery, SearchUsersQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SearchUsersQuery, SearchUsersQueryVariables>(SearchUsersDocument, options);
+}
+export type SearchUsersQueryHookResult = ReturnType<typeof useSearchUsersQuery>;
+export type SearchUsersLazyQueryHookResult = ReturnType<typeof useSearchUsersLazyQuery>;
+export type SearchUsersQueryResult = Apollo.QueryResult<SearchUsersQuery, SearchUsersQueryVariables>;
+export const SeeFollowingsDocument = gql`
+  query seeFollowings($username: String!, $lastId: Int) {
+    seeFollowings(username: $username, lastId: $lastId) {
+      success
+      error
+      totalPages
+      followings {
+        id
+        name
+        username
+        email
+        bio
+        avatar
+        totalFollowings
+        totalFollowers
+        isMe
+        isFollowing
+      }
+    }
+  }
+`;
+
+/**
+ * __useSeeFollowingsQuery__
+ *
+ * To run a query within a React component, call `useSeeFollowingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSeeFollowingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSeeFollowingsQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *      lastId: // value for 'lastId'
+ *   },
+ * });
+ */
+export function useSeeFollowingsQuery(
+  baseOptions: Apollo.QueryHookOptions<SeeFollowingsQuery, SeeFollowingsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SeeFollowingsQuery, SeeFollowingsQueryVariables>(SeeFollowingsDocument, options);
+}
+export function useSeeFollowingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SeeFollowingsQuery, SeeFollowingsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SeeFollowingsQuery, SeeFollowingsQueryVariables>(SeeFollowingsDocument, options);
+}
+export type SeeFollowingsQueryHookResult = ReturnType<typeof useSeeFollowingsQuery>;
+export type SeeFollowingsLazyQueryHookResult = ReturnType<typeof useSeeFollowingsLazyQuery>;
+export type SeeFollowingsQueryResult = Apollo.QueryResult<SeeFollowingsQuery, SeeFollowingsQueryVariables>;
+export const SeeFollowersDocument = gql`
+  query seeFollowers($username: String!, $lastId: Int) {
+    seeFollowers(username: $username, lastId: $lastId) {
+      success
+      error
+      totalPages
+      followers {
+        id
+        name
+        username
+        email
+        bio
+        avatar
+        totalFollowings
+        totalFollowers
+        isMe
+        isFollowing
+      }
+    }
+  }
+`;
+
+/**
+ * __useSeeFollowersQuery__
+ *
+ * To run a query within a React component, call `useSeeFollowersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSeeFollowersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSeeFollowersQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *      lastId: // value for 'lastId'
+ *   },
+ * });
+ */
+export function useSeeFollowersQuery(
+  baseOptions: Apollo.QueryHookOptions<SeeFollowersQuery, SeeFollowersQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SeeFollowersQuery, SeeFollowersQueryVariables>(SeeFollowersDocument, options);
+}
+export function useSeeFollowersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SeeFollowersQuery, SeeFollowersQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SeeFollowersQuery, SeeFollowersQueryVariables>(SeeFollowersDocument, options);
+}
+export type SeeFollowersQueryHookResult = ReturnType<typeof useSeeFollowersQuery>;
+export type SeeFollowersLazyQueryHookResult = ReturnType<typeof useSeeFollowersLazyQuery>;
+export type SeeFollowersQueryResult = Apollo.QueryResult<SeeFollowersQuery, SeeFollowersQueryVariables>;

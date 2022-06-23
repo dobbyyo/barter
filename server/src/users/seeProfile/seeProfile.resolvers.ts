@@ -6,6 +6,9 @@ const resolvers: Resolvers = {
       try {
         const user = await client.user.findUnique({
           where: { username },
+          include: {
+            posts: true,
+          },
         });
         if (!user) {
           return {

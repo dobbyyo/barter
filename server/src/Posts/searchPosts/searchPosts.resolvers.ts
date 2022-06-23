@@ -8,16 +8,17 @@ const resolvers: Resolvers = {
           where: {
             OR: [
               {
-                caption: {
+                title: {
                   contains: keyword.toLowerCase(),
                 },
               },
             ],
           },
-          take: 5,
-          skip: (page - 1) * 5,
+          take: 8,
+          skip: (page - 1) * 8,
         });
-        if (!isPost) {
+        console.log(isPost.length);
+        if (isPost.length === 0) {
           return {
             success: false,
             error: "포스터가 없습니다.",
@@ -27,7 +28,7 @@ const resolvers: Resolvers = {
           where: {
             OR: [
               {
-                caption: {
+                title: {
                   contains: keyword.toLowerCase(),
                 },
               },
@@ -37,7 +38,7 @@ const resolvers: Resolvers = {
         return {
           success: true,
           posts: isPost,
-          totalPages: Math.ceil(totalPages / 5),
+          totalPages: Math.ceil(totalPages / 8),
         };
       } catch (err) {
         return {

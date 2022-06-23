@@ -4,7 +4,7 @@ const resolvers: Resolvers = {
   Query: {
     searchUsers: async (_, { keyword }, { client }) => {
       try {
-        const isUser = client.user.findMany({
+        const isUser = await client.user.findMany({
           where: {
             username: {
               startsWith: keyword.toLowerCase(),

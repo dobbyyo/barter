@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { faDice, faHome, faMoon, faSearch, faSun, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 
 import { darkModeVar, disableDarkMode, enableDarkMode, isLoggedInVar, logUserOut } from '../../apollo';
 import LoginUser from '../../hook/loginUser';
@@ -70,6 +71,11 @@ const SearchWrapper = styled.div`
     position: absolute;
     right: 0;
   }
+  select {
+    position: absolute;
+    right: 30px;
+    border: 1px solid ${(props) => props.theme.borderColor};
+  }
 `;
 const Search = styled.input`
   border-bottom: 1px solid ${(props) => props.theme.fontColor};
@@ -114,6 +120,8 @@ const Header = () => {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
   const darkMode = useReactiveVar(darkModeVar);
 
+  const { handleSubmit, getValues, register } = useForm();
+
   const { data } = LoginUser();
 
   const onLogout = useCallback(() => {
@@ -144,6 +152,18 @@ const Header = () => {
 
   const categoryArr = ['디저털기기', '생활가전', '가구_인테리어', '유야', '생활_가공식품'];
 
+  const onSearch = useCallback(() => {
+    const { keyword, option } = getValues();
+    if (keyword.length === 0 || keyword.trim().length === 0) {
+      alert('검색어를 입력해주세요');
+    }
+    if (option === '포스터') {
+      navigate(`/title/${keyword}/1`);
+    } else {
+      navigate(`/users/${keyword}`);
+    }
+  }, [getValues]);
+
   return (
     <Container>
       <Wrapper>
@@ -166,8 +186,17 @@ const Header = () => {
           </Title>
 
           <SearchWrapper>
-            <Search placeholder="제목을 입력해주세요" />
-            <FontAwesomeIcon icon={faSearch} size="lg" className="searchI" />
+            <form onSubmit={handleSubmit(onSearch)}>
+              <Search
+                placeholder="제목을 입력해주세요"
+                {...register('keyword', { required: '제목/유저를 입력해주세요' })}
+              />
+              <FontAwesomeIcon icon={faSearch} size="lg" className="searchI" />
+              <select {...register('option')}>
+                <option value="포스터">포스터</option>
+                <option value="유저">유저</option>
+              </select>
+            </form>
           </SearchWrapper>
 
           <IconsContainer>

@@ -2,7 +2,7 @@ import { Resolvers } from "../../types";
 
 const resolvers: Resolvers = {
   Query: {
-    seeFollowings: async (_, { username, page }, { client }) => {
+    seeFollowings: async (_, { username, lastId }, { client }) => {
       try {
         const isUser = await client.user.findUnique({
           where: { username },
@@ -17,8 +17,9 @@ const resolvers: Resolvers = {
         const followings = await client.user
           .findUnique({ where: { username } })
           .followings({
-            take: 5,
-            skip: (page - 1) * 5,
+            take: 10,
+            skip: lastId === undefined ? 0 : 1,
+            ...(lastId && { cursor: { id: lastId } }),
           });
         const totalFollowings = await client.user.count({
           where: { followings: { some: { username } } },
@@ -26,7 +27,7 @@ const resolvers: Resolvers = {
         return {
           success: true,
           followings,
-          totalPages: Math.ceil(totalFollowings / 5),
+          totalPages: Math.ceil(totalFollowings / 10),
         };
       } catch (err) {
         return {

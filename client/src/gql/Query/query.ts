@@ -114,6 +114,7 @@ export const seeProfile = gql`
         totalFollowers
         isMe
         isFollowing
+        totalPosts
         posts {
           id
           file
@@ -166,6 +167,154 @@ export const categoryPost = gql`
           bio
           avatar
         }
+      }
+    }
+  }
+`;
+
+export const seeHashtag = gql`
+  query seeHashtag($keyword: String!, $page: Int!) {
+    seeHashtag(keyword: $keyword, page: $page) {
+      success
+      error
+      totalPages
+      posts {
+        id
+        file
+        title
+        caption
+        category
+        likes
+        isMine
+        isLiked
+        updatedAt
+        createdAt
+        commentNumber
+        user {
+          id
+          name
+          username
+          email
+          bio
+          avatar
+        }
+      }
+    }
+  }
+`;
+
+export const searchPosts = gql`
+  query searchPosts($keyword: String!, $page: Int!) {
+    searchPosts(keyword: $keyword, page: $page) {
+      success
+      error
+      totalPages
+      posts {
+        id
+        file
+        title
+        caption
+        category
+        likes
+        isMine
+        isLiked
+        updatedAt
+        createdAt
+        commentNumber
+        user {
+          id
+          name
+          username
+          email
+          bio
+          avatar
+        }
+      }
+    }
+  }
+`;
+
+export const searchUsers = gql`
+  query searchUsers($keyword: String!) {
+    searchUsers(keyword: $keyword) {
+      success
+      error
+      user {
+        id
+        name
+        username
+        email
+        bio
+        avatar
+        totalFollowings
+        totalFollowers
+        isMe
+        isFollowing
+        posts {
+          id
+          file
+          title
+          caption
+          category
+          likes
+          isMine
+          isLiked
+          updatedAt
+          createdAt
+          commentNumber
+          user {
+            id
+            name
+            username
+            email
+            bio
+            avatar
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const seeFollowings = gql`
+  query seeFollowings($username: String!, $lastId: Int) {
+    seeFollowings(username: $username, lastId: $lastId) {
+      success
+      error
+      totalPages
+      followings {
+        id
+        name
+        username
+        email
+        bio
+        avatar
+        totalFollowings
+        totalFollowers
+        isMe
+        isFollowing
+      }
+    }
+  }
+`;
+
+export const seeFollowers = gql`
+  query seeFollowers($username: String!, $lastId: Int) {
+    seeFollowers(username: $username, lastId: $lastId) {
+      success
+      error
+      totalPages
+      followers {
+        id
+        name
+        username
+        email
+        bio
+        avatar
+        totalFollowings
+        totalFollowers
+        isMe
+        isFollowing
       }
     }
   }

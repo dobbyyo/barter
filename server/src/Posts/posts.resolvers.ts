@@ -49,25 +49,4 @@ export default {
       return false;
     },
   },
-  Hashtag: {
-    posts: ({ id }, { page }, { loggedInUser }) => {
-      return client.hashtag
-        .findUnique({
-          where: {
-            id,
-          },
-        })
-        .posts();
-    },
-    totalPosts: ({ id }) =>
-      client.post.count({
-        where: {
-          hashtags: {
-            some: {
-              id,
-            },
-          },
-        },
-      }),
-  },
 };
