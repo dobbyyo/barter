@@ -319,3 +319,79 @@ export const seeFollowers = gql`
     }
   }
 `;
+
+export const seeRooms = gql`
+  query seeRooms {
+    seeRooms {
+      success
+      error
+      room {
+        id
+        unreadTotal
+        createdAt
+        updatedAt
+        users {
+          id
+          name
+          username
+          email
+          bio
+          avatar
+        }
+        message {
+          id
+          payload
+          read
+          createdAt
+          updatedAt
+          user {
+            id
+            name
+            username
+            email
+            bio
+            avatar
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const seeRoom = gql`
+  query seeRoom {
+    seeRooms {
+      success
+      error
+      room {
+        id
+        unreadTotal
+        createdAt
+        updatedAt
+        users {
+          id
+          name
+          username
+          email
+          bio
+          avatar
+        }
+        message {
+          id
+          payload
+          read
+          createdAt
+          updatedAt
+          user {
+            id
+            name
+            username
+            email
+            bio
+            avatar
+          }
+        }
+      }
+    }
+  }
+`;
