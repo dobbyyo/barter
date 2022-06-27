@@ -359,8 +359,8 @@ export const seeRooms = gql`
 `;
 
 export const seeRoom = gql`
-  query seeRoom {
-    seeRooms {
+  query seeRoom($id: Int!) {
+    seeRoom(id: $id) {
       success
       error
       room {
@@ -368,14 +368,6 @@ export const seeRoom = gql`
         unreadTotal
         createdAt
         updatedAt
-        users {
-          id
-          name
-          username
-          email
-          bio
-          avatar
-        }
         message {
           id
           payload

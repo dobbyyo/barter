@@ -153,10 +153,11 @@ export const toggleLike = gql`
 
 // 메시지
 export const sendMessage = gql`
-  mutation sendMessage($payload: String!, $roomId: Int!, $userId: Int!) {
+  mutation sendMessage($payload: String!, $roomId: Int, $userId: Int) {
     sendMessage(payload: $payload, roomId: $roomId, userId: $userId) {
       success
       error
+      id
     }
   }
 `;

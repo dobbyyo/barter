@@ -8,6 +8,7 @@ const routes = {
   category: '/category/:category/:page',
   hashtagPost: '/hashtag/:hashtag/:page',
   titlePost: '/title/:title/:page',
+  messageRoom: '/messageRoom',
 };
 
 export default routes;

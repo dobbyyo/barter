@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { Post, useAllPostsQuery } from '../generated/graphql';
 import PostLayout from '../components/post/PostLayout';
-import { Container, MovePage, MoveWrapper, PageBtn, Title, Wrapper } from './CommonStyled/Wrapper';
+import { Container, MovePage, MoveWrapper, PageBtn, Title, Wrapper } from './Style/CommonStyled/Wrapper';
 
 const Home = () => {
   const navigate = useNavigate();

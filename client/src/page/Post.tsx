@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { faComment, faPaperPlane, faHeart as Heart, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { faHeart, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Avatar from '../components/Avatar';
@@ -13,121 +13,23 @@ import PostComment from '../components/post/PostComment';
 import LoginUser from '../hook/loginUser';
 import EditPost from '../components/post/PostEdit';
 import useConfirm from '../hook/useConfirm';
-
-const Container = styled.div<{ openEdit: boolean }>`
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  min-width: 100%;
-  max-width: 100%;
-  display: ${(props) => (props.openEdit ? 'none' : 'flex')};
-`;
-
-const Wrapper = styled.div`
-  max-width: 1200px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 30px;
-  padding: 20px 0;
-`;
-
-const Left = styled.div`
-  width: 40%;
-  max-width: 650px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0 50px;
-`;
-
-const PostImg = styled.img`
-  min-width: 400px;
-`;
-
-const Right = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 0 50px;
-  width: 40%;
-  min-width: 400px;
-
-  .title {
-    color: ${(props) => props.theme.blue};
-    font-weight: 700;
-    font-size: 20px;
-    border-bottom: 1px solid ${(props) => props.theme.blue};
-    margin: 10px 0;
-    padding-bottom: 3px;
-    text-align: center;
-  }
-  .caption {
-    font-weight: 600;
-    margin-bottom: 10px;
-    font-size: 16px;
-    a {
-      background-color: initial;
-      color: ${(props) => props.theme.accent};
-      cursor: pointer;
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-  .category {
-    font-size: 15px;
-    font-weight: 400;
-    border-bottom: 1px solid ${(props) => props.theme.borderColor};
-    padding: 5px 0;
-    margin-bottom: 10px;
-  }
-`;
-
-const UserI = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding-bottom: 20px;
-  span {
-    margin-left: 10px;
-  }
-`;
-
-const UserHeader = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const LikeI = styled.div`
-  span {
-    margin-left: 3px;
-  }
-`;
-const PostActions = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 20px;
-  div {
-    display: flex;
-    align-items: center;
-  }
-  svg {
-    font-size: 20px;
-  }
-`;
-
-const PostAction = styled.div`
-  margin-right: 10px;
-  cursor: pointer;
-`;
+import {
+  Container,
+  Left,
+  LikeI,
+  PostAction,
+  PostActions,
+  PostImg,
+  Right,
+  UserHeader,
+  UserI,
+  Wrapper,
+} from './Style/PostStyled/PostStyled';
+import routes from '../routes';
 
 const Post = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [confirmData, setConfirmData] = useState(false);
   const ok = () => setConfirmData(true);
   const cancel = () => setConfirmData(false);
@@ -193,12 +95,15 @@ const Post = () => {
   }, [confirmData]);
 
   useEffect(() => {
-    console.log(confirmData);
     if (confirmData) {
       onDeletePost();
       window.location.replace('/');
     }
   }, [confirmData]);
+
+  const onMoveMessage = useCallback(() => {
+    navigate(routes.messageRoom);
+  }, []);
 
   return (
     <>
@@ -260,7 +165,7 @@ const Post = () => {
                 <FontAwesomeIcon size="lg" icon={faComment} />
               </PostAction>
               <PostAction>
-                <FontAwesomeIcon size="lg" icon={faPaperPlane} />
+                <FontAwesomeIcon size="lg" icon={faPaperPlane} onClick={onMoveMessage} />
               </PostAction>
             </PostActions>
           </Right>

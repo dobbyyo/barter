@@ -88,7 +88,7 @@ export type Mutation = {
   join: MutationResult;
   login: LoginResult;
   readMessage: MutationResult;
-  sendMessage?: Maybe<MutationResult>;
+  sendMessage: SendMessageResult;
   toggleLike: MutationResult;
   unfollowUser: MutationResult;
   uploadPost: UploadResult;
@@ -435,6 +435,13 @@ export type SeeRoomsResult = {
   success: Scalars['Boolean'];
 };
 
+export type SendMessageResult = {
+  __typename?: 'sendMessageResult';
+  error?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
+  success: Scalars['Boolean'];
+};
+
 export type UploadResult = {
   __typename?: 'uploadResult';
   Post?: Maybe<Post>;
@@ -595,13 +602,13 @@ export type ToggleLikeMutation = {
 
 export type SendMessageMutationVariables = Exact<{
   payload: Scalars['String'];
-  roomId: Scalars['Int'];
-  userId: Scalars['Int'];
+  roomId?: InputMaybe<Scalars['Int']>;
+  userId?: InputMaybe<Scalars['Int']>;
 }>;
 
 export type SendMessageMutation = {
   __typename?: 'Mutation';
-  sendMessage?: { __typename?: 'MutationResult'; success: boolean; error?: string | null } | null;
+  sendMessage: { __typename?: 'sendMessageResult'; success: boolean; error?: string | null; id?: number | null };
 };
 
 export type ReadMessageMutationVariables = Exact<{
@@ -1038,29 +1045,22 @@ export type SeeRoomsQuery = {
   };
 };
 
-export type SeeRoomQueryVariables = Exact<{ [key: string]: never }>;
+export type SeeRoomQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
 
 export type SeeRoomQuery = {
   __typename?: 'Query';
-  seeRooms: {
-    __typename?: 'seeRoomsResult';
+  seeRoom: {
+    __typename?: 'seeRoomResult';
     success: boolean;
     error?: string | null;
-    room?: Array<{
+    room?: {
       __typename?: 'Room';
       id: number;
       unreadTotal: number;
       createdAt: string;
       updatedAt: string;
-      users?: Array<{
-        __typename?: 'User';
-        id: number;
-        name: string;
-        username: string;
-        email: string;
-        bio?: string | null;
-        avatar?: string | null;
-      } | null> | null;
       message?: Array<{
         __typename?: 'Message';
         id: number;
@@ -1078,7 +1078,7 @@ export type SeeRoomQuery = {
           avatar?: string | null;
         };
       } | null> | null;
-    } | null> | null;
+    } | null;
   };
 };
 
@@ -1644,10 +1644,11 @@ export type ToggleLikeMutationHookResult = ReturnType<typeof useToggleLikeMutati
 export type ToggleLikeMutationResult = Apollo.MutationResult<ToggleLikeMutation>;
 export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMutation, ToggleLikeMutationVariables>;
 export const SendMessageDocument = gql`
-  mutation sendMessage($payload: String!, $roomId: Int!, $userId: Int!) {
+  mutation sendMessage($payload: String!, $roomId: Int, $userId: Int) {
     sendMessage(payload: $payload, roomId: $roomId, userId: $userId) {
       success
       error
+      id
     }
   }
 `;
@@ -2396,8 +2397,8 @@ export type SeeRoomsQueryHookResult = ReturnType<typeof useSeeRoomsQuery>;
 export type SeeRoomsLazyQueryHookResult = ReturnType<typeof useSeeRoomsLazyQuery>;
 export type SeeRoomsQueryResult = Apollo.QueryResult<SeeRoomsQuery, SeeRoomsQueryVariables>;
 export const SeeRoomDocument = gql`
-  query seeRoom {
-    seeRooms {
+  query seeRoom($id: Int!) {
+    seeRoom(id: $id) {
       success
       error
       room {
@@ -2405,14 +2406,6 @@ export const SeeRoomDocument = gql`
         unreadTotal
         createdAt
         updatedAt
-        users {
-          id
-          name
-          username
-          email
-          bio
-          avatar
-        }
         message {
           id
           payload
@@ -2445,10 +2438,11 @@ export const SeeRoomDocument = gql`
  * @example
  * const { data, loading, error } = useSeeRoomQuery({
  *   variables: {
+ *      id: // value for 'id'
  *   },
  * });
  */
-export function useSeeRoomQuery(baseOptions?: Apollo.QueryHookOptions<SeeRoomQuery, SeeRoomQueryVariables>) {
+export function useSeeRoomQuery(baseOptions: Apollo.QueryHookOptions<SeeRoomQuery, SeeRoomQueryVariables>) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SeeRoomQuery, SeeRoomQueryVariables>(SeeRoomDocument, options);
 }

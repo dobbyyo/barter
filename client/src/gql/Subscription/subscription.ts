@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { useSubscription } from '@apollo/client';
 
 const roomUpdates = gql`
   subscription roomUpdates($id: Int!) {

@@ -15,29 +15,12 @@ import routes from '../../routes';
 import MoreBox from './MoreBox';
 import Avatar from '../Avatar';
 
-const Container = styled.div`
-  width: 100%;
-  background-color: #f3f3f3;
-  border-bottom: 1px solid ${(props) => props.theme.borderColor};
-  padding-top: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-`;
-const Wrapper = styled.div`
-  min-width: 100%;
-  width: 100%;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-`;
 const Top = styled.div`
   display: flex;
   justify-content: end;
   padding: 0 40px;
+  color: ${(props) => props.theme.bgColor};
+  padding-top: 20px;
 `;
 const SHeader = styled.span`
   margin: 0 5px;
@@ -48,11 +31,15 @@ const SHeader = styled.span`
 `;
 
 const Middle = styled.div`
-  color: #000;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px 45px;
+  position: sticky;
+  top: 0px;
+  color: ${(props) => props.theme.fontColor};
+  background-color: ${(props) => props.theme.bgColor};
+  z-index: 999;
 `;
 
 const Title = styled.div`
@@ -93,6 +80,7 @@ const Bottom = styled.div`
   padding: 20px 0;
   align-items: center;
   justify-content: space-around;
+  color: ${(props) => props.theme.bgColor};
 
   .left {
     width: 10%;
@@ -165,81 +153,81 @@ const Header = () => {
   }, [getValues]);
 
   return (
-    <Container>
-      <Wrapper>
-        <Top>
-          {isLoggedIn ? (
-            <SHeader onClick={onLogout}>로그아웃</SHeader>
-          ) : (
-            <>
-              <SHeader onClick={onLogin}>로그인</SHeader>
-              <SHeader onClick={onJoin}>회원가입</SHeader>
-            </>
+    // <Container>
+    <>
+      <Top>
+        {isLoggedIn ? (
+          <SHeader onClick={onLogout}>로그아웃</SHeader>
+        ) : (
+          <>
+            <SHeader onClick={onLogin}>로그인</SHeader>
+            <SHeader onClick={onJoin}>회원가입</SHeader>
+          </>
+        )}
+        <SHeader>개발자</SHeader>
+      </Top>
+
+      <Middle>
+        <Title onClick={onHome}>
+          <FontAwesomeIcon icon={faDice} size="2x" />
+          <h1>Barter</h1>
+        </Title>
+
+        <SearchWrapper>
+          <form onSubmit={handleSubmit(onSearch)}>
+            <Search
+              placeholder="제목을 입력해주세요"
+              {...register('keyword', { required: '제목/유저를 입력해주세요' })}
+            />
+            <FontAwesomeIcon icon={faSearch} size="lg" className="searchI" />
+            <select {...register('option')}>
+              <option value="포스터">포스터</option>
+              <option value="유저">유저</option>
+            </select>
+          </form>
+        </SearchWrapper>
+
+        <IconsContainer>
+          <Icon>
+            <FontAwesomeIcon icon={faHome} size="lg" onClick={onHome} />
+          </Icon>
+          <Icon>
+            <FontAwesomeIcon
+              icon={darkMode ? faSun : faMoon}
+              size="lg"
+              onClick={darkMode ? disableDarkMode : enableDarkMode}
+            />
+          </Icon>
+
+          {data?.me.user && (
+            <Icon>
+              <Link to={`/users/${data?.me.user?.username}`}>
+                <Avatar url={data?.me?.user?.avatar} email={data?.me.user?.email} />
+              </Link>
+            </Icon>
           )}
-          <SHeader>개발자</SHeader>
-        </Top>
+          <Icon>
+            <FontAwesomeIcon icon={faUpload} size="lg" onClick={onUploadPost} />
+          </Icon>
+        </IconsContainer>
+      </Middle>
 
-        <Middle>
-          <Title onClick={onHome}>
-            <FontAwesomeIcon icon={faDice} size="2x" />
-            <h1>Barter</h1>
-          </Title>
-
-          <SearchWrapper>
-            <form onSubmit={handleSubmit(onSearch)}>
-              <Search
-                placeholder="제목을 입력해주세요"
-                {...register('keyword', { required: '제목/유저를 입력해주세요' })}
-              />
-              <FontAwesomeIcon icon={faSearch} size="lg" className="searchI" />
-              <select {...register('option')}>
-                <option value="포스터">포스터</option>
-                <option value="유저">유저</option>
-              </select>
-            </form>
-          </SearchWrapper>
-
-          <IconsContainer>
-            <Icon>
-              <FontAwesomeIcon icon={faHome} size="lg" onClick={onHome} />
-            </Icon>
-            <Icon>
-              <FontAwesomeIcon
-                icon={darkMode ? faSun : faMoon}
-                size="lg"
-                onClick={darkMode ? disableDarkMode : enableDarkMode}
-              />
-            </Icon>
-
-            {data?.me.user && (
-              <Icon>
-                <Link to={`/users/${data?.me.user?.username}`}>
-                  <Avatar url={data?.me?.user?.avatar} email={data?.me.user?.email} />
-                </Link>
-              </Icon>
-            )}
-            <Icon>
-              <FontAwesomeIcon icon={faUpload} size="lg" onClick={onUploadPost} />
-            </Icon>
-          </IconsContainer>
-        </Middle>
-
-        <Bottom>
-          <div className="left" onMouseOver={onOver}>
-            <h1>카테고리+</h1>
-          </div>
-          <div className="right">
-            {categoryArr.map((v, i) => (
-              <H1 key={i} onClick={() => onCategoryPosts(i)}>
-                {v}
-              </H1>
-            ))}
-            <H1 onMouseOver={onOver}>더보기</H1>
-          </div>
-        </Bottom>
-        {moreBox && <MoreBox onMouseLeave={onLeave} />}
-      </Wrapper>
-    </Container>
+      <Bottom>
+        <div className="left" onMouseOver={onOver}>
+          <h1>카테고리+</h1>
+        </div>
+        <div className="right">
+          {categoryArr.map((v, i) => (
+            <H1 key={i} onClick={() => onCategoryPosts(i)}>
+              {v}
+            </H1>
+          ))}
+          <H1 onMouseOver={onOver}>더보기</H1>
+        </div>
+      </Bottom>
+      {moreBox && <MoreBox onMouseLeave={onLeave} />}
+    </>
+    // </Container>
   );
 };
 

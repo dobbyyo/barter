@@ -11,6 +11,8 @@ const Container = styled.div`
   place-items: center;
   grid-template-columns: repeat(4, 1fr);
   padding: 20px 0;
+  position: sticky;
+  top: 0;
 `;
 const Name = styled.div`
   color: ${(props) => props.theme.fontColor};

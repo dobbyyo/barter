@@ -3,9 +3,11 @@
 /* eslint-disable no-unneeded-ternary */
 import { useReactiveVar } from '@apollo/client';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useInView } from 'react-intersection-observer';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 
 import { isLoggedInVar } from '../apollo';
 import Avatar from '../components/Avatar';
@@ -13,7 +15,6 @@ import PageTitle from '../components/PageTitle';
 import PostLayout from '../components/post/PostLayout';
 import { BoldText, Btn, ErrorSpan } from '../components/shared';
 import EditForm from '../components/user/EditForm';
-
 import {
   Post,
   useFollowUserMutation,
@@ -25,6 +26,7 @@ import {
 } from '../generated/graphql';
 import LoginUser from '../hook/loginUser';
 import FollowLayout from '../components/user/FollowLayout';
+import routes from '../routes';
 
 const Wrapper = styled.div<{ editUser: boolean }>`
   width: 100%;
@@ -101,7 +103,7 @@ const Profile = () => {
   const { data: userData } = LoginUser();
   const isLoggedIn = useReactiveVar(isLoggedInVar);
   const { ref, inView } = useInView();
-
+  const navigate = useNavigate();
   const { data: ProfileData, loading: ProfileLoading } = useSeeProfileQuery({
     variables: {
       username: String(username),
@@ -238,6 +240,10 @@ const Profile = () => {
     setSeePost(true);
   }, [setFollowers, setFollowing, setSeePost]);
 
+  const onMoveMessage = useCallback(() => {
+    navigate(routes.messageRoom);
+  }, []);
+
   return (
     <>
       {editUser && <EditForm userData={userData} />}
@@ -280,6 +286,11 @@ const Profile = () => {
                   <Item onClick={onChangePosts}>
                     <span>
                       <Value>{ProfileData?.seeProfile?.user?.totalPosts}</Value> 포스터
+                    </span>
+                  </Item>
+                  <Item onClick={onChangePosts}>
+                    <span>
+                      <FontAwesomeIcon size="lg" icon={faPaperPlane} onClick={onMoveMessage} />
                     </span>
                   </Item>
                 </List>

@@ -20,6 +20,7 @@ import Profile from './page/Profile';
 import Category from './page/Category';
 import HashtagPost from './page/HashtagPosts';
 import TitlePosts from './page/TitlePosts';
+import MessageRoom from './page/MessageRoom';
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -86,6 +87,14 @@ function App() {
                 element={
                   <Layout>
                     <TitlePosts />
+                  </Layout>
+                }
+              />
+              <Route
+                path={routes.messageRoom}
+                element={
+                  <Layout>
+                    <MessageRoom />
                   </Layout>
                 }
               />

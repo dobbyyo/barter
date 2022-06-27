@@ -1,9 +1,11 @@
 /* eslint-disable default-param-last */
-import { ApolloClient, createHttpLink, InMemoryCache, makeVar } from '@apollo/client';
+import { ApolloClient, InMemoryCache, makeVar, split } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { createUploadLink } from 'apollo-upload-client';
 import { NavigateFunction } from 'react-router-dom';
 import { setContext } from '@apollo/client/link/context';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { WebSocketLink } from '@apollo/client/link/ws';
 
 import routes from './routes';
 
@@ -11,6 +13,8 @@ const TOKEN = 'TOKEN';
 const DARK_MODE = 'DARK_MODE';
 
 export const isLoggedInVar = makeVar(Boolean(localStorage.getItem(TOKEN)));
+
+console.log(localStorage.getItem(TOKEN));
 export const logInUser = (token: string) => {
   localStorage.setItem(TOKEN, token);
   isLoggedInVar(true);
@@ -54,8 +58,29 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 });
 
+const wsLink = new WebSocketLink({
+  uri: 'ws://localhost:4000/graphql',
+  options: {
+    reconnect: true,
+    connectionParams: () => ({
+      Token: localStorage.getItem(TOKEN),
+    }),
+  },
+});
+
+const httpLinks = authLink.concat(errorLink).concat(uploadHttpLink);
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+  },
+  wsLink,
+  httpLinks,
+);
+
 export const client = new ApolloClient({
-  link: authLink.concat(errorLink).concat(uploadHttpLink),
+  link: splitLink,
   cache: new InMemoryCache({
     typePolicies: {
       User: {
@@ -67,7 +92,6 @@ export const client = new ApolloClient({
             keyArgs: false,
             merge(existing, incoming) {
               if (existing) {
-                console.log(existing.followers);
                 const result = {
                   ...existing,
                   ...incoming,
@@ -82,7 +106,6 @@ export const client = new ApolloClient({
             keyArgs: false,
             merge(existing, incoming) {
               if (existing) {
-                console.log(existing.followings);
                 const result = {
                   ...existing,
                   ...incoming,

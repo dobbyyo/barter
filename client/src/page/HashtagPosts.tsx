@@ -4,7 +4,7 @@ import React, { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PostLayout from '../components/post/PostLayout';
 import { Post, useSeeHashtagQuery } from '../generated/graphql';
-import { Container, MovePage, MoveWrapper, PageBtn, Title, Wrapper } from './CommonStyled/Wrapper';
+import { Container, MovePage, MoveWrapper, PageBtn, Title, Wrapper } from './Style/CommonStyled/Wrapper';
 
 const HashtagPost = () => {
   const navigate = useNavigate();
