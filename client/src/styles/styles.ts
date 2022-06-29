@@ -36,4 +36,7 @@ export const GlobalStyles = createGlobalStyle`
       text-decoration: none;
       color: inherit;
     }
+    $tablet: 768px;
+    $laptop: 1020px;
+    $desktop: 1400px;
 `;

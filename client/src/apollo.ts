@@ -14,7 +14,6 @@ const DARK_MODE = 'DARK_MODE';
 
 export const isLoggedInVar = makeVar(Boolean(localStorage.getItem(TOKEN)));
 
-console.log(localStorage.getItem(TOKEN));
 export const logInUser = (token: string) => {
   localStorage.setItem(TOKEN, token);
   isLoggedInVar(true);
@@ -44,7 +43,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      token: localStorage.getItem(TOKEN),
+      Token: localStorage.getItem(TOKEN),
     },
   };
 });
@@ -114,6 +113,11 @@ export const client = new ApolloClient({
                 return result;
               }
               return incoming;
+            },
+          },
+          Message: {
+            merge(existing, incoming) {
+              return [...existing, ...incoming];
             },
           },
         },
