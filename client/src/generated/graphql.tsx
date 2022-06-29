@@ -204,6 +204,7 @@ export type Query = {
   allPosts: AllPostsResult;
   categoryPost: CategoryPostResult;
   me: MeResult;
+  randomPosts?: Maybe<RandomSuccess>;
   searchPosts: SearchPostsResult;
   searchUsers: SearchResult;
   seeFeed: SeeFeedResult;
@@ -366,6 +367,13 @@ export type EditResult = {
   __typename?: 'editResult';
   error?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['Int']>;
+  success: Scalars['Boolean'];
+};
+
+export type RandomSuccess = {
+  __typename?: 'randomSuccess';
+  error?: Maybe<Scalars['String']>;
+  post?: Maybe<Array<Maybe<Post>>>;
   success: Scalars['Boolean'];
 };
 
@@ -677,6 +685,40 @@ export type AllPostsQuery = {
       };
     } | null> | null;
   };
+};
+
+export type RandomPostsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type RandomPostsQuery = {
+  __typename?: 'Query';
+  randomPosts?: {
+    __typename?: 'randomSuccess';
+    success: boolean;
+    error?: string | null;
+    post?: Array<{
+      __typename?: 'Post';
+      id: number;
+      file: string;
+      title: string;
+      caption?: string | null;
+      category: string;
+      likes: number;
+      isMine: boolean;
+      isLiked: boolean;
+      updatedAt: string;
+      createdAt: string;
+      commentNumber: number;
+      user: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        username: string;
+        email: string;
+        bio?: string | null;
+        avatar?: string | null;
+      };
+    } | null> | null;
+  } | null;
 };
 
 export type SeePostQueryVariables = Exact<{
@@ -1821,6 +1863,66 @@ export function useAllPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<A
 export type AllPostsQueryHookResult = ReturnType<typeof useAllPostsQuery>;
 export type AllPostsLazyQueryHookResult = ReturnType<typeof useAllPostsLazyQuery>;
 export type AllPostsQueryResult = Apollo.QueryResult<AllPostsQuery, AllPostsQueryVariables>;
+export const RandomPostsDocument = gql`
+  query randomPosts {
+    randomPosts {
+      success
+      error
+      post {
+        id
+        file
+        title
+        caption
+        category
+        likes
+        isMine
+        isLiked
+        updatedAt
+        createdAt
+        commentNumber
+        user {
+          id
+          name
+          username
+          email
+          bio
+          avatar
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useRandomPostsQuery__
+ *
+ * To run a query within a React component, call `useRandomPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRandomPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRandomPostsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRandomPostsQuery(
+  baseOptions?: Apollo.QueryHookOptions<RandomPostsQuery, RandomPostsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<RandomPostsQuery, RandomPostsQueryVariables>(RandomPostsDocument, options);
+}
+export function useRandomPostsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<RandomPostsQuery, RandomPostsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<RandomPostsQuery, RandomPostsQueryVariables>(RandomPostsDocument, options);
+}
+export type RandomPostsQueryHookResult = ReturnType<typeof useRandomPostsQuery>;
+export type RandomPostsLazyQueryHookResult = ReturnType<typeof useRandomPostsLazyQuery>;
+export type RandomPostsQueryResult = Apollo.QueryResult<RandomPostsQuery, RandomPostsQueryVariables>;
 export const SeePostDocument = gql`
   query seePost($id: Int!) {
     seePost(id: $id) {

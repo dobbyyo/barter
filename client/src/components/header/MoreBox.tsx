@@ -20,6 +20,9 @@ const Name = styled.div`
   padding: 6px 0;
   border-bottom: 1px solid ${(props) => props.theme.borderColor};
   cursor: pointer;
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 interface Props {

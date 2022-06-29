@@ -32,7 +32,7 @@ const MakeArr = () => {
       <Wrapper>
         {DeskArr.map((v, i) => (
           <H1 key={i} onClick={() => onCategoryPosts(v)}>
-            {v}
+            <h1>{v}</h1>
           </H1>
         ))}
       </Wrapper>

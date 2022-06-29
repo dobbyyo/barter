@@ -5,7 +5,7 @@ import React, { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { logUserOut } from '../../apollo';
-import { MeQuery, User } from '../../generated/graphql';
+import { MeQuery } from '../../generated/graphql';
 import routes from '../../routes';
 
 const Wrapper = styled.div`
@@ -27,6 +27,7 @@ const Menu = styled.div`
   justify-content: center;
   align-items: center;
   padding: 10px 0;
+  cursor: pointer;
   h1 {
     margin-left: 10px;
   }

@@ -50,6 +50,36 @@ export const allPosts = gql`
   }
 `;
 
+export const randomPosts = gql`
+  query randomPosts {
+    randomPosts {
+      success
+      error
+      post {
+        id
+        file
+        title
+        caption
+        category
+        likes
+        isMine
+        isLiked
+        updatedAt
+        createdAt
+        commentNumber
+        user {
+          id
+          name
+          username
+          email
+          bio
+          avatar
+        }
+      }
+    }
+  }
+`;
+
 export const seePost = gql`
   query seePost($id: Int!) {
     seePost(id: $id) {

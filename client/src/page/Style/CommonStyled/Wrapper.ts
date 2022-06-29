@@ -14,8 +14,10 @@ export const Container = styled.div`
   gap: 10px;
   padding: 20px 80px;
   align-items: center;
-  max-width: 1200px;
-  min-width: 1200px;
+  @media screen and (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
+  }
 `;
 
 export const Title = styled.div`
@@ -70,4 +72,8 @@ export const PageBtn = styled.button`
     background-color: ${(props) => props.theme.fontColor};
     color: ${(props) => props.theme.bgColor};
   }
+`;
+
+export const MarginDiv = styled.div`
+  margin-top: 50px;
 `;
