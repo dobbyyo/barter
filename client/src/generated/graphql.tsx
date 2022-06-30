@@ -687,6 +687,43 @@ export type AllPostsQuery = {
   };
 };
 
+export type SeeFeedQueryVariables = Exact<{
+  page: Scalars['Int'];
+}>;
+
+export type SeeFeedQuery = {
+  __typename?: 'Query';
+  seeFeed: {
+    __typename?: 'seeFeedResult';
+    success: boolean;
+    error?: string | null;
+    totalPages?: number | null;
+    post?: Array<{
+      __typename?: 'Post';
+      id: number;
+      file: string;
+      title: string;
+      caption?: string | null;
+      category: string;
+      likes: number;
+      isMine: boolean;
+      isLiked: boolean;
+      updatedAt: string;
+      createdAt: string;
+      commentNumber: number;
+      user: {
+        __typename?: 'User';
+        id: number;
+        name: string;
+        username: string;
+        email: string;
+        bio?: string | null;
+        avatar?: string | null;
+      };
+    } | null> | null;
+  };
+};
+
 export type RandomPostsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type RandomPostsQuery = {
@@ -1863,6 +1900,64 @@ export function useAllPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<A
 export type AllPostsQueryHookResult = ReturnType<typeof useAllPostsQuery>;
 export type AllPostsLazyQueryHookResult = ReturnType<typeof useAllPostsLazyQuery>;
 export type AllPostsQueryResult = Apollo.QueryResult<AllPostsQuery, AllPostsQueryVariables>;
+export const SeeFeedDocument = gql`
+  query seeFeed($page: Int!) {
+    seeFeed(page: $page) {
+      success
+      error
+      totalPages
+      post {
+        id
+        file
+        title
+        caption
+        category
+        likes
+        isMine
+        isLiked
+        updatedAt
+        createdAt
+        commentNumber
+        user {
+          id
+          name
+          username
+          email
+          bio
+          avatar
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSeeFeedQuery__
+ *
+ * To run a query within a React component, call `useSeeFeedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSeeFeedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSeeFeedQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function useSeeFeedQuery(baseOptions: Apollo.QueryHookOptions<SeeFeedQuery, SeeFeedQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SeeFeedQuery, SeeFeedQueryVariables>(SeeFeedDocument, options);
+}
+export function useSeeFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SeeFeedQuery, SeeFeedQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SeeFeedQuery, SeeFeedQueryVariables>(SeeFeedDocument, options);
+}
+export type SeeFeedQueryHookResult = ReturnType<typeof useSeeFeedQuery>;
+export type SeeFeedLazyQueryHookResult = ReturnType<typeof useSeeFeedLazyQuery>;
+export type SeeFeedQueryResult = Apollo.QueryResult<SeeFeedQuery, SeeFeedQueryVariables>;
 export const RandomPostsDocument = gql`
   query randomPosts {
     randomPosts {

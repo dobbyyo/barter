@@ -50,6 +50,37 @@ export const allPosts = gql`
   }
 `;
 
+export const seeFeed = gql`
+  query seeFeed($page: Int!) {
+    seeFeed(page: $page) {
+      success
+      error
+      totalPages
+      post {
+        id
+        file
+        title
+        caption
+        category
+        likes
+        isMine
+        isLiked
+        updatedAt
+        createdAt
+        commentNumber
+        user {
+          id
+          name
+          username
+          email
+          bio
+          avatar
+        }
+      }
+    }
+  }
+`;
+
 export const randomPosts = gql`
   query randomPosts {
     randomPosts {

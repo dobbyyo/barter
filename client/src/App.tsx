@@ -21,6 +21,7 @@ import Category from './page/Category';
 import HashtagPost from './page/HashtagPosts';
 import TitlePosts from './page/TitlePosts';
 import MessageRoom from './page/MessageRoom';
+import Feed from './page/Feed';
 
 function App() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -79,6 +80,14 @@ function App() {
                 element={
                   <Layout>
                     <HashtagPost />
+                  </Layout>
+                }
+              />
+              <Route
+                path={routes.feed}
+                element={
+                  <Layout>
+                    <Feed />
                   </Layout>
                 }
               />

@@ -2,7 +2,7 @@
 import React, { useCallback, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import styled from 'styled-components';
-import { faDice, faMoon, faSearch, faSun } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faDice, faMoon, faSearch, faSun } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 
@@ -132,9 +132,13 @@ const Header = () => {
               onClick={darkMode ? disableDarkMode : enableDarkMode}
             />
           </Icon>
-          {data?.me.user && (
+          {data?.me.user ? (
             <Icon onClick={onUserMoreBox}>
               <Avatar url={data?.me?.user?.avatar} email={data?.me.user?.email} />
+            </Icon>
+          ) : (
+            <Icon>
+              <FontAwesomeIcon icon={faBars} onClick={onUserMoreBox} />
             </Icon>
           )}
         </IconsContainer>

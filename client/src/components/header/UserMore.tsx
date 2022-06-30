@@ -1,5 +1,5 @@
 import { faUser } from '@fortawesome/free-regular-svg-icons';
-import { faArrowUpFromBracket, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUpFromBracket, faPodcast, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -58,31 +58,42 @@ const UserMore: FC<Props> = ({ isLoggedIn, onUserMoreBox, loginUser }) => {
   }, []);
   const onUser = useCallback(() => {
     navigate(`/users/${loginUser?.me.user?.username}`);
+    onUserMoreBox();
+  }, []);
+  const onFeed = useCallback(() => {
+    navigate('/feed/1');
+    onUserMoreBox();
   }, []);
 
   return (
     <Wrapper>
-      <Menu>
-        <FontAwesomeIcon icon={faUpload} size="lg" onClick={onUploadPost} />
-        <h1>업로드</h1>
-      </Menu>
-      <Menu>
-        <FontAwesomeIcon icon={faUser} size="lg" onClick={onUser} />
-        <h1>프로필</h1>
-      </Menu>
       {isLoggedIn ? (
-        <Menu>
-          <FontAwesomeIcon icon={faArrowUpFromBracket} size="lg" onClick={onLogout} />
-          <h1>로그아웃</h1>
-        </Menu>
+        <>
+          <Menu onClick={onFeed}>
+            <FontAwesomeIcon icon={faPodcast} size="lg" />
+            <h1>피드</h1>
+          </Menu>
+          <Menu onClick={onUser}>
+            <FontAwesomeIcon icon={faUser} size="lg" />
+            <h1>프로필</h1>
+          </Menu>
+          <Menu onClick={onUploadPost}>
+            <FontAwesomeIcon icon={faUpload} size="lg" />
+            <h1>업로드</h1>
+          </Menu>
+          <Menu onClick={onLogout}>
+            <FontAwesomeIcon icon={faArrowUpFromBracket} size="lg" />
+            <h1>로그아웃</h1>
+          </Menu>
+        </>
       ) : (
         <>
-          <Menu>
-            <FontAwesomeIcon icon={faArrowUpFromBracket} size="lg" onClick={onLogin} />
+          <Menu onClick={onLogin}>
+            <FontAwesomeIcon icon={faArrowUpFromBracket} size="lg" />
             <h1>로그인</h1>
           </Menu>
-          <Menu>
-            <FontAwesomeIcon icon={faArrowUpFromBracket} size="lg" onClick={onJoin} />
+          <Menu onClick={onJoin}>
+            <FontAwesomeIcon icon={faArrowUpFromBracket} size="lg" />
             <h1>회원가입</h1>
           </Menu>
         </>

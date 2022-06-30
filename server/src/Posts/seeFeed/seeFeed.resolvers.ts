@@ -4,7 +4,7 @@ const resolvers: Resolvers = {
   Query: {
     seeFeed: async (_, { page }, { loggedInUser, client }) => {
       try {
-        if (loggedInUser) {
+        if (!loggedInUser) {
           return {
             success: false,
             error: "로그인이 필요합니다.",
@@ -30,8 +30,8 @@ const resolvers: Resolvers = {
           orderBy: {
             createdAt: "desc",
           },
-          take: 5,
-          skip: (page - 1) * 5,
+          take: 8,
+          skip: (page - 1) * 8,
         });
         const total = await client.post.count({
           where: {
@@ -55,7 +55,7 @@ const resolvers: Resolvers = {
         return {
           success: true,
           post: posts,
-          totalPages: Math.ceil(total / 5),
+          totalPages: Math.ceil(total / 8),
         };
       } catch (err) {
         return {

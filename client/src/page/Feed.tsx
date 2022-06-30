@@ -2,23 +2,23 @@
 import React, { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PostLayout from '../components/post/PostLayout';
-import { Post, useCategoryPostQuery } from '../generated/graphql';
+import { Post, useSeeFeedQuery } from '../generated/graphql';
 import { Container, MovePage, MoveWrapper, PageBtn, Title, Wrapper } from './Style/CommonStyled/Wrapper';
 
-const Category = () => {
+const Feed = () => {
   const navigate = useNavigate();
-  const { category, page } = useParams();
+  const { page } = useParams();
 
-  const { data } = useCategoryPostQuery({ variables: { category: String(category), page: Number(page) } });
-
-  const total = data?.categoryPost.totalPages;
+  const { data } = useSeeFeedQuery({ variables: { page: Number(page) } });
+  console.log(data);
+  const total = data?.seeFeed.totalPages;
 
   const arr = Array.from({ length: Number(total) }, () => 0);
 
   const onMovePage = useCallback(
     (pageNumber: number) => {
       if (pageNumber !== Number(page)) {
-        navigate(`/home/${pageNumber}`);
+        navigate(`/feed/${pageNumber}`);
       }
     },
     [page],
@@ -27,11 +27,11 @@ const Category = () => {
   return (
     <Wrapper>
       <Title>
-        <h1>Category</h1>
-        <span>{category} 게시글</span>
+        <h1>Feed</h1>
+        <span>Feed 게시글</span>
       </Title>
       <Container>
-        {data?.categoryPost.posts?.map((post) => (
+        {data?.seeFeed.post?.map((post) => (
           <PostLayout key={post?.id} post={post as Post} />
         ))}
       </Container>
@@ -46,4 +46,4 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default Feed;
