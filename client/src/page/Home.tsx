@@ -1,13 +1,12 @@
-/* eslint-disable global-require */
-/* eslint-disable react/no-array-index-key */
-import React, { useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Post, useAllPostsQuery, useRandomPostsQuery } from '../generated/graphql';
 import PostLayout from '../components/post/PostLayout';
-import { Container, MarginDiv, MovePage, MoveWrapper, PageBtn, Title, Wrapper } from './Style/CommonStyled/Wrapper';
+import { Container, MarginDiv, Title, Wrapper } from './Style/CommonStyled/Wrapper';
 import RandomLayout from '../components/post/RandomLayout';
+import PageHook from '../hook/PageHook';
 
 const RandomWrapper = styled.div`
   width: 100%;
@@ -17,24 +16,12 @@ const RandomWrapper = styled.div`
 `;
 
 const Home = () => {
-  const navigate = useNavigate();
   const { page } = useParams();
 
   const { data: AllPosts } = useAllPostsQuery({ variables: { page: Number(page) } });
   const { data: RandomPosts } = useRandomPostsQuery();
 
   const total = AllPosts?.allPosts.totalPages;
-
-  const arr = Array.from({ length: Number(total) }, () => 0);
-
-  const onMovePage = useCallback(
-    (pageNumber: number) => {
-      if (pageNumber !== Number(page)) {
-        navigate(`/home/${pageNumber}`);
-      }
-    },
-    [page],
-  );
 
   return (
     <Wrapper>
@@ -59,13 +46,7 @@ const Home = () => {
           <PostLayout key={post?.id} post={post as Post} />
         ))}
       </Container>
-      <MoveWrapper>
-        {arr.map((v, i) => (
-          <MovePage key={i}>
-            <PageBtn onClick={() => onMovePage(i + 1)}>{i + 1}</PageBtn>
-          </MovePage>
-        ))}
-      </MoveWrapper>
+      <PageHook total={total} page={page} name="home" />
     </Wrapper>
   );
 };

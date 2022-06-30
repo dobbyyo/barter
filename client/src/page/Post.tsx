@@ -4,7 +4,6 @@ import { faComment, faPaperPlane, faHeart as Heart, faPenToSquare } from '@forta
 import { faHeart, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
 
 import Avatar from '../components/Avatar';
 import { useDeletePostMutation, useSeePostQuery, useToggleLikeMutation } from '../generated/graphql';
@@ -78,9 +77,6 @@ const Post = () => {
 
   const [deletePostMutation] = useDeletePostMutation({
     update(cache, { data: deleteData }) {
-      // if (deleteData?.deletePost.success === false) {
-      //   return null;
-      // }
       cache.evict({ id: `Post:${deleteData?.deletePost.id}` });
       cache.gc();
     },

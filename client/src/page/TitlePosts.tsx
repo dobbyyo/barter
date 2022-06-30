@@ -1,31 +1,16 @@
-/* eslint-disable react/no-array-index-key */
-import React, { useCallback } from 'react';
-
-import { useNavigate, useParams } from 'react-router-dom';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 
 import { Post, useSearchPostsQuery } from '../generated/graphql';
 import PostLayout from '../components/post/PostLayout';
-import { Container, MovePage, MoveWrapper, PageBtn, Title, Wrapper } from './Style/CommonStyled/Wrapper';
+import { Container, Title, Wrapper } from './Style/CommonStyled/Wrapper';
 import { ErrorSpan } from '../components/shared';
+import PageHook from '../hook/PageHook';
 
 const TitlePosts = () => {
-  const navigate = useNavigate();
   const { title, page } = useParams();
-
   const { data } = useSearchPostsQuery({ variables: { keyword: String(title), page: Number(page) } });
-
   const total = data?.searchPosts.totalPages;
-
-  const arr = Array.from({ length: Number(total) }, () => 0);
-
-  const onMovePage = useCallback(
-    (pageNumber: number) => {
-      if (pageNumber !== Number(page)) {
-        navigate(`/title/${title}/${pageNumber}`);
-      }
-    },
-    [page],
-  );
 
   return (
     <Wrapper>
@@ -42,13 +27,7 @@ const TitlePosts = () => {
               <PostLayout key={post?.id} post={post as Post} />
             ))}
           </Container>
-          <MoveWrapper>
-            {arr.map((v, i) => (
-              <MovePage key={i}>
-                <PageBtn onClick={() => onMovePage(i + 1)}>{i + 1}</PageBtn>
-              </MovePage>
-            ))}
-          </MoveWrapper>
+          <PageHook total={total} page={page} name="title" title={title} />
         </>
       )}
     </Wrapper>

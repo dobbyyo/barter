@@ -57,8 +57,10 @@ const SearchBox = () => {
     }
     if (option === '포스터') {
       navigate(`/title/${keyword}/1`);
-    } else {
+    } else if (option === '유저') {
       navigate(`/users/${keyword}`);
+    } else {
+      navigate(`/hashtag/${keyword}/1`);
     }
   }, [getValues]);
 
@@ -70,6 +72,7 @@ const SearchBox = () => {
         <FontAwesomeIcon icon={faSearch} size="lg" className="searchI" />
         <select {...register('option')}>
           <option value="포스터">포스터</option>
+          <option value="해시태그">해시태그</option>
           <option value="유저">유저</option>
         </select>
       </form>
