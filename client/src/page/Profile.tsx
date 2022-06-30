@@ -1,13 +1,10 @@
-/* eslint-disable prefer-destructuring */
-/* eslint-disable react/jsx-boolean-value */
-/* eslint-disable no-unneeded-ternary */
 import { useReactiveVar } from '@apollo/client';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useInView } from 'react-intersection-observer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
+import { useMediaQuery } from 'react-responsive';
 
 import { isLoggedInVar } from '../apollo';
 import Avatar from '../components/Avatar';
@@ -15,15 +12,7 @@ import PageTitle from '../components/PageTitle';
 import PostLayout from '../components/post/PostLayout';
 import { BoldText, Btn, ErrorSpan } from '../components/shared';
 import EditForm from '../components/user/EditForm';
-import {
-  Post,
-  useFollowUserMutation,
-  User,
-  useSeeFollowersQuery,
-  useSeeFollowingsQuery,
-  useSeeProfileQuery,
-  useUnfollowUserMutation,
-} from '../generated/graphql';
+import { Post, useFollowUserMutation, useSeeProfileQuery, useUnfollowUserMutation } from '../generated/graphql';
 import LoginUser from '../hook/loginUser';
 import FollowLayout from '../components/user/FollowLayout';
 import routes from '../routes';
@@ -35,29 +24,48 @@ const Wrapper = styled.div<{ editUser: boolean }>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 `;
 
 const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 const Column = styled.div``;
 const Username = styled.h3`
   font-size: 28px;
   font-weight: 400;
+  @media screen and (max-width: 768px) {
+    font-size: 15px;
+  }
 `;
 const Row = styled.div`
   margin-bottom: 20px;
   font-size: 16px;
   display: flex;
   align-items: center;
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+    margin-top: 20px;
+    justify-content: center;
+  }
 `;
 const List = styled.ul`
   display: flex;
+  @media screen and (max-width: 768px) {
+    justify-content: space-around;
+    align-items: center;
+  }
 `;
 const Item = styled.li`
   margin-right: 20px;
+  @media screen and (max-width: 768px) {
+    margin-right: 12px;
+  }
 `;
 const Value = styled(BoldText)`
   font-size: 18px;
@@ -73,36 +81,25 @@ const Grid = styled.div`
   gap: 10px;
   padding: 20px 80px;
   align-items: center;
-`;
-const FollowWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-top: 30px;
-  .box {
-    padding: 10px 0;
-    width: 40%;
-    display: flex;
-    border-bottom: 1px solid ${(props) => props.theme.borderColor};
-    align-items: center;
-    justify-content: start;
-    .username {
-      margin: 0 20px;
-    }
+  @media screen and (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
   }
 `;
+
 const ProfileBtn = styled(Btn)`
   height: 30px;
   margin-left: 10px;
+  @media screen and (max-width: 768px) {
+    width: 60px;
+  }
 `;
 
 const Profile = () => {
   const { username } = useParams();
   const { data: userData } = LoginUser();
   const isLoggedIn = useReactiveVar(isLoggedInVar);
-  const { ref, inView } = useInView();
+
   const navigate = useNavigate();
   const { data: ProfileData, loading: ProfileLoading } = useSeeProfileQuery({
     variables: {
@@ -118,7 +115,7 @@ const Profile = () => {
       cache.modify({
         id: `User:${username}`,
         fields: {
-          isFollowing(prev) {
+          isFollowing() {
             return true;
           },
           totalFollowers(prev) {
@@ -146,7 +143,7 @@ const Profile = () => {
       cache.modify({
         id: `User:${username}`,
         fields: {
-          isFollowing(prev) {
+          isFollowing() {
             return false;
           },
           totalFollowers(prev) {
@@ -184,65 +181,22 @@ const Profile = () => {
     setEditUser((cur) => !cur);
   }, []);
 
-  const {
-    data: seeFollowingsData,
-    fetchMore: seeFollowingsMore,
-    loading: followingLoading,
-  } = useSeeFollowingsQuery({
-    variables: { username: String(username) },
-  });
-  const {
-    data: seeFollowerData,
-    fetchMore: seeFollowersMore,
-    loading: followerLoading,
-  } = useSeeFollowersQuery({
-    variables: { username: String(username) },
-  });
-
-  const [toN, setToN] = useState(1);
-  const [more, setMore] = useState(true);
-  const moreCall = useCallback(async (): Promise<void> => {
-    const a = seeFollowerData?.seeFollowers.followers;
-    const lastId = a && a[a.length - 1]?.id;
-    const total = seeFollowerData?.seeFollowers.totalPages;
-
-    if (total === toN) {
-      setMore(false);
-    }
-
-    if (inView && !followerLoading && more) {
-      await seeFollowersMore({ variables: { lastId } });
-      setToN((prev) => prev + 1);
-    }
-  }, [inView, followerLoading]);
-
-  useEffect(() => {
-    moreCall();
-  }, [inView, followerLoading]);
-
   const [followers, setFollowers] = useState(false);
   const [following, setFollowing] = useState(false);
-  const [seePost, setSeePost] = useState(true);
 
-  const onChangeFollowers = useCallback(() => {
-    setFollowers(true);
+  const onFollowers = useCallback(() => {
+    setFollowers((prev) => !prev);
     setFollowing(false);
-    setSeePost(false);
-  }, [setFollowers, setFollowing, setSeePost]);
-  const onChangeFollowing = useCallback(() => {
+  }, []);
+  const onFollowing = useCallback(() => {
+    setFollowing((prev) => !prev);
     setFollowers(false);
-    setFollowing(true);
-    setSeePost(false);
-  }, [setFollowers, setFollowing, setSeePost]);
-  const onChangePosts = useCallback(() => {
-    setFollowers(false);
-    setFollowing(false);
-    setSeePost(true);
-  }, [setFollowers, setFollowing, setSeePost]);
+  }, []);
 
   const onMoveMessage = useCallback(() => {
     navigate(routes.messageRoom);
   }, []);
+  const isDeskTop = useMediaQuery({ minWidth: 769 });
 
   return (
     <>
@@ -255,7 +209,7 @@ const Profile = () => {
             <Avatar
               url={ProfileData?.seeProfile?.user?.avatar}
               email={ProfileData?.seeProfile.user?.email}
-              large={true}
+              large={isDeskTop && true}
             />
             <Column>
               <Row>
@@ -273,22 +227,22 @@ const Profile = () => {
               </Row>
               <Row>
                 <List>
-                  <Item onClick={onChangeFollowers}>
+                  <Item onClick={onFollowers}>
                     <span>
                       <Value>{ProfileData?.seeProfile?.user?.totalFollowers}</Value> 팔로워
                     </span>
                   </Item>
-                  <Item onClick={onChangeFollowing}>
+                  <Item onClick={onFollowing}>
                     <span>
                       <Value>{ProfileData?.seeProfile?.user?.totalFollowings}</Value> 팔로윙
                     </span>
                   </Item>
-                  <Item onClick={onChangePosts}>
+                  <Item>
                     <span>
                       <Value>{ProfileData?.seeProfile?.user?.totalPosts}</Value> 포스터
                     </span>
                   </Item>
-                  <Item onClick={onChangePosts}>
+                  <Item>
                     <span>
                       <FontAwesomeIcon size="lg" icon={faPaperPlane} onClick={onMoveMessage} />
                     </span>
@@ -301,27 +255,11 @@ const Profile = () => {
               <Row>{ProfileData?.seeProfile?.user?.bio}</Row>
             </Column>
           </Header>
-          {followers && (
-            <FollowWrapper>
-              {seeFollowerData?.seeFollowers.followers?.map((v) => (
-                <FollowLayout data={v as User} key={v?.id} />
-              ))}
-            </FollowWrapper>
+          {(followers || following) && (
+            <FollowLayout data={ProfileData} username={username} followers={followers} following={following} />
           )}
 
-          {following && (
-            <FollowWrapper>
-              {seeFollowingsData?.seeFollowings?.followings?.map((v) => (
-                <FollowLayout data={v as User} key={v?.id} />
-              ))}
-            </FollowWrapper>
-          )}
-
-          <div ref={!followerLoading ? ref : undefined} style={{ marginBottom: '20px' }} />
-
-          {seePost && (
-            <Grid>{arrPost && arrPost.map((post) => <PostLayout key={post?.id} post={post as Post} />)}</Grid>
-          )}
+          <Grid>{arrPost && arrPost.map((post) => <PostLayout key={post?.id} post={post as Post} />)}</Grid>
         </Wrapper>
       ) : (
         <ErrorSpan>{ProfileData?.seeProfile.error}</ErrorSpan>

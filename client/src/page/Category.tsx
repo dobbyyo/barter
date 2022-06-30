@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 import React, { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PostLayout from '../components/post/PostLayout';
@@ -38,7 +37,7 @@ const Category = () => {
       </Container>
       <MoveWrapper>
         {arr.map((v, i) => (
-          <MovePage key={i}>
+          <MovePage key={v}>
             <PageBtn onClick={() => onMovePage(i + 1)}>{i + 1}</PageBtn>
           </MovePage>
         ))}

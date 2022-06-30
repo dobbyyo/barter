@@ -14,20 +14,24 @@ export const Header = styled.div`
   padding: 5px 10px;
   display: flex;
   align-items: center;
+  height: 30px;
 `;
 
 export const Username = styled(BoldText)`
   margin-left: 5px;
 `;
-
+export const PostFile = styled.img`
+  width: 100%;
+  height: 290px;
+`;
 export const TopWrapper = styled.div`
   width: 100%;
-  height: 60%;
+  /* height: 200px; */
 `;
 export const PostData = styled.div`
-  padding: 15px;
-  height: 40%;
-  margin-top: 10px;
+  padding: 0 10px;
+  height: 100px;
+  margin-top: 3px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -56,10 +60,6 @@ export const LinkWrapper = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-export const PostFile = styled.img`
-  width: 100%;
 `;
 
 export const Icons = styled.div`

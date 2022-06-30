@@ -40,6 +40,7 @@
     "no-confusing-arrow": "off",
     "no-alert": "off",
     "no-use-before-define": "off",
-    "import/newline-after-import": "off"
+    "import/newline-after-import": "off",
+    "no-array-constructor": "off"
   }
 }

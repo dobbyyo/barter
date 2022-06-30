@@ -1,5 +1,3 @@
-/* eslint-disable react/no-array-index-key */
-
 import React, { useCallback } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useNavigate } from 'react-router-dom';
@@ -30,8 +28,8 @@ const MakeArr = () => {
   if (isDeskTop) {
     return (
       <Wrapper>
-        {DeskArr.map((v, i) => (
-          <H1 key={i} onClick={() => onCategoryPosts(v)}>
+        {DeskArr.map((v) => (
+          <H1 key={v} onClick={() => onCategoryPosts(v)}>
             <h1>{v}</h1>
           </H1>
         ))}
@@ -41,8 +39,8 @@ const MakeArr = () => {
 
   return (
     <Wrapper>
-      {MobileArr.map((v, i) => (
-        <H1 key={i} onClick={() => onCategoryPosts(v)}>
+      {MobileArr.map((v) => (
+        <H1 key={v} onClick={() => onCategoryPosts(v)}>
           {v}
         </H1>
       ))}

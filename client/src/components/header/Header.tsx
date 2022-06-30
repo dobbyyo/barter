@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
-/* eslint-disable react/no-array-index-key */
 import React, { useCallback, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import styled from 'styled-components';
