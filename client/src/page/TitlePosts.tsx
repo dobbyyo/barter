@@ -6,6 +6,7 @@ import PostLayout from '../components/post/PostLayout';
 import { Container, Title, Wrapper } from './Style/CommonStyled/Wrapper';
 import { ErrorSpan } from '../components/shared';
 import PageHook from '../hook/PageHook';
+import PageTitle from '../components/PageTitle';
 
 const TitlePosts = () => {
   const { title, page } = useParams();
@@ -14,6 +15,8 @@ const TitlePosts = () => {
 
   return (
     <Wrapper>
+      <PageTitle title="TitlePosts" />
+
       {data?.searchPosts.error ? (
         <ErrorSpan>{data.searchPosts.error}</ErrorSpan>
       ) : (

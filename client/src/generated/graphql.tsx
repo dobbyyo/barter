@@ -1137,25 +1137,12 @@ export type SeeRoomQuery = {
     room?: {
       __typename?: 'Room';
       id: number;
-      unreadTotal: number;
-      createdAt: string;
-      updatedAt: string;
       message?: Array<{
         __typename?: 'Message';
         id: number;
         payload: string;
         read: boolean;
-        createdAt: string;
-        updatedAt: string;
-        user: {
-          __typename?: 'User';
-          id: number;
-          name: string;
-          username: string;
-          email: string;
-          bio?: string | null;
-          avatar?: string | null;
-        };
+        user: { __typename?: 'User'; username: string; email: string; avatar?: string | null };
       } | null> | null;
     } | null;
   };
@@ -1172,31 +1159,7 @@ export type RoomUpdatesSubscription = {
     id: number;
     payload: string;
     read: boolean;
-    createdAt: string;
-    updatedAt: string;
-    user: {
-      __typename?: 'User';
-      id: number;
-      name: string;
-      username: string;
-      email: string;
-      bio?: string | null;
-      avatar?: string | null;
-    };
-    room: {
-      __typename?: 'Room';
-      id: number;
-      unreadTotal: number;
-      users?: Array<{
-        __typename?: 'User';
-        id: number;
-        name: string;
-        username: string;
-        email: string;
-        bio?: string | null;
-        avatar?: string | null;
-      } | null> | null;
-    };
+    user: { __typename?: 'User'; username: string; avatar?: string | null };
   } | null;
 };
 
@@ -2600,21 +2563,13 @@ export const SeeRoomDocument = gql`
       error
       room {
         id
-        unreadTotal
-        createdAt
-        updatedAt
         message {
           id
           payload
           read
-          createdAt
-          updatedAt
           user {
-            id
-            name
             username
             email
-            bio
             avatar
           }
         }
@@ -2656,27 +2611,9 @@ export const RoomUpdatesDocument = gql`
       id
       payload
       read
-      createdAt
-      updatedAt
       user {
-        id
-        name
         username
-        email
-        bio
         avatar
-      }
-      room {
-        id
-        unreadTotal
-        users {
-          id
-          name
-          username
-          email
-          bio
-          avatar
-        }
       }
     }
   }

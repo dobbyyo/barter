@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import PageTitle from '../components/PageTitle';
 import PostLayout from '../components/post/PostLayout';
 import { Post, useSeeHashtagQuery } from '../generated/graphql';
 import PageHook from '../hook/PageHook';
@@ -12,6 +13,7 @@ const HashtagPost = () => {
 
   return (
     <Wrapper>
+      <PageTitle title="Hashtag" />
       <Title>
         <h1>Hashtag</h1>
         <span>해시태그 #{hashtag} 게시글</span>

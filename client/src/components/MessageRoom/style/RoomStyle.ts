@@ -2,20 +2,21 @@ import styled from 'styled-components';
 
 export const MessageContainer = styled.div`
   display: flex;
-  width: 50%;
+  width: 100%;
+  min-width: 330px;
+  max-width: 400px;
   margin: 0 10px;
-  position: fixed;
-  height: 60%;
-  top: 36%;
-  background-color: #f4f4f4;
+  height: 400px;
   color: ${(props) => props.theme.fontColor};
-  cursor: default;
+  position: relative;
+  border: 3px solid ${(props) => props.theme.borderColor};
 `;
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 90%;
   width: 100%;
+  overflow: scroll;
 `;
 
 export const IconWrapper = styled.div`
@@ -23,9 +24,13 @@ export const IconWrapper = styled.div`
   align-items: center;
   padding: 20px 10px;
   border-bottom: 1px solid ${(props) => props.theme.borderColor};
+  position: sticky;
+  top: 0;
+  background-color: ${(props) => props.theme.bgColor};
   .icon {
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
   .otherInfo {
     display: flex;
@@ -40,6 +45,7 @@ export const IconWrapper = styled.div`
 export const Author = styled.div<{ place: boolean }>`
   display: ${(props) => (props.place ? 'none' : 'flex')};
   align-items: center;
+  justify-content: center;
 `;
 
 export const Username = styled.div`
@@ -47,14 +53,22 @@ export const Username = styled.div`
 `;
 export const MessageWrapper = styled.div<{ place: boolean }>`
   display: flex;
-  align-items: center;
-  justify-content: ${(props) => (props.place ? 'end' : 'start')};
+  flex-direction: column;
+  align-items: ${(props) => (props.place ? 'end' : 'start')};
+  justify-content: center;
   padding: 10px;
+`;
+
+export const MessageInfo = styled.div`
+  display: flex;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const Message = styled.div`
   display: flex;
-  background-color: yellowgreen;
+  background-color: #03cf5b;
   border-radius: 10px;
   margin-left: 20px;
   height: 20px;
@@ -64,27 +78,30 @@ export const Message = styled.div`
 
 export const Form = styled.form`
   width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  position: relative;
+  align-items: center;
+  bottom: 0;
+  position: absolute;
 `;
 
 export const TextInput = styled.input`
-  margin-bottom: 10px;
-  width: 80%;
+  margin-bottom: 3px;
+  width: 100%;
   background-color: white;
   padding: 10px 20px;
-  border-radius: 1000px;
 `;
+
 export const Btn = styled.input`
   position: absolute;
+  z-index: 99999;
   background-color: #000;
   color: #fff;
+  bottom: 5px;
   padding: 5px;
   font-size: 8px;
-  right: 9%;
-  bottom: 10%;
-  border-radius: 50%;
+  right: 2%;
+  padding: 10px 10px;
+  height: 10px;
+  border-radius: 10px;
 `;

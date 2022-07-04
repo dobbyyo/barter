@@ -25,6 +25,7 @@ import {
   Wrapper,
 } from './Style/PostStyled/PostStyled';
 import routes from '../routes';
+import PageTitle from '../components/PageTitle';
 
 const Post = () => {
   const { id } = useParams();
@@ -103,6 +104,7 @@ const Post = () => {
 
   return (
     <>
+      <PageTitle title="Post" />
       {openEdit ? <EditPost userData={userData} post={data} /> : null}
       <Container openEdit={openEdit}>
         <Wrapper>

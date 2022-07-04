@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { BoldText } from '../../shared';
 
 export const PostsContainer = styled.div`
-  background-color: white;
+  background-color: ${(props) => props.theme.bgColor};
   border: 1px solid ${(props) => props.theme.borderColor};
   max-width: 280px;
   position: relative;
@@ -68,7 +68,7 @@ export const Icons = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 55%;
+  height: 63%;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
   opacity: 0;

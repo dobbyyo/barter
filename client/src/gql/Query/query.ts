@@ -426,21 +426,13 @@ export const seeRoom = gql`
       error
       room {
         id
-        unreadTotal
-        createdAt
-        updatedAt
         message {
           id
           payload
           read
-          createdAt
-          updatedAt
           user {
-            id
-            name
             username
             email
-            bio
             avatar
           }
         }

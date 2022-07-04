@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
+import Room from '../components/MessageRoom/Room';
 import Rooms from '../components/MessageRoom/Rooms';
 import { Room as RoomQuery, useSeeRoomsQuery } from '../generated/graphql';
+import LoginUser from '../hook/loginUser';
 
 const Container = styled.div`
   width: 100%;
@@ -12,26 +14,54 @@ const Container = styled.div`
 `;
 
 const Row = styled.div`
-  width: 50%;
-  border: 1px solid ${(props) => props.theme.borderColor};
-  background-color: #f4f4f4;
-  height: 400px;
-  overflow: scroll;
-`;
-const Col = styled.div`
+  min-width: 330px;
+  max-width: 400px;
   display: flex;
   align-items: center;
-  h1 {
-    margin-left: 8px;
-  }
+  justify-content: flex-start;
+  flex-direction: column;
+  height: 400px;
+  background-color: ${(props) => props.theme.bgColor};
+  border: 2px solid ${(props) => props.theme.borderColor};
+  overflow: scroll;
 `;
 
-const MessageRoom = () => {
-  const { data, loading } = useSeeRoomsQuery();
+const Div = styled.div``;
 
+const MessageRoom = () => {
+  const { data: MeData } = LoginUser();
+
+  const { data, loading } = useSeeRoomsQuery();
+  const [openRoom, setOpenRoom] = useState(false);
+  const [roomId, setRoomID] = useState<number>();
+  const onConsole = useCallback(
+    (id?: number) => {
+      setRoomID(id);
+    },
+    [setRoomID],
+  );
+
+  const onChange = useCallback(() => {
+    setOpenRoom((cur) => !cur);
+  }, []);
+
+  const onMoveRoom = useCallback(() => {
+    setOpenRoom(false);
+  }, []);
   return (
     <Container>
-      <Row>{data && data.seeRooms.room?.map((v) => <Rooms data={v as RoomQuery} key={v?.id} />)}</Row>
+      {openRoom ? (
+        <Room id={roomId} meData={MeData} onMoveRoom={onMoveRoom} />
+      ) : (
+        <Row>
+          {data &&
+            data.seeRooms.room?.map((v) => (
+              <Div key={v?.id} onClick={() => onConsole(v?.id)}>
+                <Rooms data={v as RoomQuery} onChange={onChange} />
+              </Div>
+            ))}
+        </Row>
+      )}
     </Container>
   );
 };

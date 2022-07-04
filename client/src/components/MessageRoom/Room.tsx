@@ -1,13 +1,18 @@
-/* eslint-disable consistent-return */
 /* eslint-disable react/jsx-boolean-value */
-import { gql, useApolloClient, useMutation, useQuery, useSubscription } from '@apollo/client';
+import { gql, useApolloClient } from '@apollo/client';
 import { faBackspace } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { Maybe, MeQuery, User, useSeeRoomQuery, useSendMessageMutation } from '../../generated/graphql';
-import roomUpdates from '../../gql/Subscription/subscription';
+import {
+  MeQuery,
+  RoomUpdatesDocument,
+  useReadMessageMutation,
+  useSeeRoomQuery,
+  useSendMessageMutation,
+} from '../../generated/graphql';
+
 import Avatar from '../Avatar';
 import {
   Author,
@@ -16,6 +21,7 @@ import {
   IconWrapper,
   Message,
   MessageContainer,
+  MessageInfo,
   MessageWrapper,
   TextInput,
   Username,
@@ -23,65 +29,45 @@ import {
 } from './style/RoomStyle';
 
 interface Props {
-  id: number;
+  id: number | undefined;
   meData: MeQuery | undefined;
-  otherUser: Maybe<User> | undefined;
+
   onMoveRoom: () => void;
 }
 
-const Room: FC<Props> = ({ id, meData, otherUser, onMoveRoom }) => {
+const Room: FC<Props> = ({ id, meData, onMoveRoom }) => {
   const { register, handleSubmit, getValues, setValue } = useForm();
 
   const { data, subscribeToMore } = useSeeRoomQuery({
-    variables: { id },
+    variables: { id: Number(id) },
   });
 
-  const [MutationSendMessage, { loading }] = useSendMessageMutation({
-    update(cache, result) {
-      const success = result.data?.sendMessage.success;
-      const newMessageId = result.data?.sendMessage.id;
-      if (success && newMessageId) {
+  const otherUser = data?.seeRoom.room?.message?.find((v: any) => v?.user.username !== meData?.me.user?.username)?.user;
+
+  const [MutationSendMessage, { loading: sendMessageLoading }] = useSendMessageMutation({
+    update(cache, { data: sendMessageData }) {
+      const success = sendMessageData?.sendMessage.success;
+      const newMessageId = sendMessageData?.sendMessage.id;
+
+      if (success && newMessageId && meData) {
         const { payload } = getValues();
-        setValue('message', '');
+        setValue('payload', '');
         const messageObj = {
-          id,
-          payload,
-          user: {
-            username: meData?.me.user?.username,
-            avatar: meData?.me.user?.avatar,
-          },
-          read: true,
           __typename: 'Message',
+          createdAt: `${Date.now()} ${''}`,
+          id: newMessageId,
+          payload,
+          read: true,
+          user: {
+            username: meData.me.user?.username,
+            avatar: meData.me.user?.avatar,
+          },
         };
-        const messageFragment = cache.writeFragment({
-          fragment: gql`
-            fragment NewMessage on Message {
-              id
-              payload
-              user {
-                username
-                avatar
-              }
-              read
-            }
-          `,
-          data: messageObj,
-        });
-        // const newMessage = {
-        //   __typename: 'Message',
-        //   createdAt: `${Date.now()} ${''}`,
-        //   id: result.data?.sendMessage.id,
-        //   read: true,
-        //   payload,
-        //   user: {
-        //     ...meData?.me,
-        //   },
-        // };
         cache.modify({
           id: `Room:${id}`,
           fields: {
-            messages(prev) {
-              return [...prev, messageFragment];
+            message(prev) {
+              return [messageObj, ...prev];
             },
           },
         });
@@ -89,50 +75,50 @@ const Room: FC<Props> = ({ id, meData, otherUser, onMoveRoom }) => {
     },
   });
 
-  const onSubmitMessage = useCallback(() => {
-    if (loading) {
-      return null;
-    }
-
+  const onValid = useCallback(() => {
     const { payload } = getValues();
-    return MutationSendMessage({
-      variables: { payload, roomId: id },
-    });
-  }, []);
+    if (!sendMessageLoading) {
+      MutationSendMessage({
+        variables: {
+          payload,
+          roomId: id,
+        },
+      });
+    }
+  }, [MutationSendMessage, sendMessageLoading]);
 
   const client = useApolloClient();
 
-  const updateQuery = (prevQuery: any, options: any) => {
+  const updateQueryVoid = (prevQuery: any, options: any) => {
+    console.log(prevQuery);
+    console.log('____________________');
     console.log(options);
-    const {
-      subscriptionData: {
-        data: { roomUpdates: message },
-      },
-    } = options;
+    const message = options.subscriptionData.data.roomUpdates;
+    console.log(message);
     if (message.id) {
-      const messageFragment = client.cache.writeFragment({
+      const incomingMessage = client.cache.writeFragment({
         fragment: gql`
           fragment NewMessage on Message {
             id
             payload
+            read
             user {
               username
               avatar
             }
-            read
           }
         `,
         data: message,
       });
-      return client.cache.modify({
+      client.cache.modify({
         id: `Room:${id}`,
         fields: {
-          messages(prev) {
-            const existingMessage = prev.find((aMessage: any) => aMessage.__ref === messageFragment);
+          message(prev) {
+            const existingMessage = prev.find((aMessage: any) => aMessage.__ref === incomingMessage?.__ref);
             if (existingMessage) {
               return prev;
             }
-            return [...prev, messageFragment];
+            return [...prev, incomingMessage];
           },
         },
       });
@@ -144,15 +130,40 @@ const Room: FC<Props> = ({ id, meData, otherUser, onMoveRoom }) => {
   useEffect(() => {
     if (data?.seeRoom && !subscribed) {
       subscribeToMore({
-        document: roomUpdates,
+        document: RoomUpdatesDocument,
         variables: {
-          id,
+          id: Number(id),
         },
-        updateQuery: updateQuery as any,
+        onError(error) {
+          console.log(error);
+        },
+        updateQuery: updateQueryVoid as any,
       });
       setSubscribed(true);
     }
   }, [data, subscribed]);
+
+  const [MutationReadMessage] = useReadMessageMutation({
+    update(cache, { data: ReadData }) {
+      const success = ReadData?.readMessage.success;
+      if (success) {
+        cache.modify({
+          id: `Room:${id}`,
+          fields: {
+            unreadTotal() {
+              return 0;
+            },
+          },
+        });
+      }
+    },
+  });
+
+  useEffect(() => {
+    MutationReadMessage({
+      variables: { id: Number(id) },
+    });
+  }, []);
 
   return (
     <MessageContainer>
@@ -162,24 +173,26 @@ const Room: FC<Props> = ({ id, meData, otherUser, onMoveRoom }) => {
             <FontAwesomeIcon icon={faBackspace} onClick={onMoveRoom} />
           </div>
           <div className="otherInfo">
-            <Avatar url={otherUser?.avatar} email={otherUser?.email} mid={true} />
+            <Avatar url={otherUser?.avatar} email={otherUser?.email} mid />
             <h1>{otherUser?.username}</h1>
           </div>
         </IconWrapper>
         {data?.seeRoom.room?.message?.map((v) => (
-          <MessageWrapper key={v?.id} place={v?.user.id === meData?.me.user?.id}>
-            <Author key={v?.id} place={v?.user.id === meData?.me.user?.id}>
-              <Avatar url={v?.user.avatar} email={v?.user.email} />
-              <Username>{v?.user.username}</Username>
-            </Author>
-            <Message>{v?.payload}</Message>
+          <MessageWrapper key={v?.id} place={v?.user.username === meData?.me.user?.username}>
+            <MessageInfo>
+              <Author key={v?.id} place={v?.user.username === meData?.me.user?.username}>
+                <Avatar url={v?.user.avatar} email={v?.user.email} />
+                <Username>{v?.user.username}</Username>
+              </Author>
+              <Message>{v?.payload}</Message>
+            </MessageInfo>
           </MessageWrapper>
         ))}
-        <Form onSubmit={handleSubmit(onSubmitMessage)}>
-          <TextInput placeholder="메시지를 입력해주세요" {...register('payload')} />
-          <Btn type="submit" value="확인" />
-        </Form>
       </Wrapper>
+      <Form onSubmit={handleSubmit(onValid)}>
+        <TextInput placeholder="메시지를 입력해주세요" {...register('payload')} />
+        <Btn type="submit" value="확인" />
+      </Form>
     </MessageContainer>
   );
 };

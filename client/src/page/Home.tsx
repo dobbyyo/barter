@@ -7,6 +7,7 @@ import PostLayout from '../components/post/PostLayout';
 import { Container, MarginDiv, Title, Wrapper } from './Style/CommonStyled/Wrapper';
 import RandomLayout from '../components/post/RandomLayout';
 import PageHook from '../hook/PageHook';
+import PageTitle from '../components/PageTitle';
 
 const RandomWrapper = styled.div`
   width: 100%;
@@ -25,6 +26,8 @@ const Home = () => {
 
   return (
     <Wrapper>
+      <PageTitle title="Home" />
+
       {page === '1' && (
         <>
           <Title>

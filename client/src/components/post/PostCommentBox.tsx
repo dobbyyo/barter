@@ -1,7 +1,7 @@
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { Comment, MeQuery, useDeleteCommentMutation, useEditCommentMutation } from '../../generated/graphql';

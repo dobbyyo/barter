@@ -12,7 +12,7 @@ import FormBox from '../components/auth/FormBox';
 import FormError from '../components/auth/FormError';
 import FormOption from '../components/auth/FormOption';
 import PageTitle from '../components/PageTitle';
-import { Button, Input } from '../components/shared';
+import { Button, Input, Interval } from '../components/shared';
 import { useUploadPostMutation } from '../generated/graphql';
 import LoginUser from '../hook/loginUser';
 import routes from '../routes';
@@ -99,6 +99,7 @@ const UploadPost = () => {
   return (
     <AuthLayout>
       <PageTitle title="게시글 업로드" />
+      <Interval />
       <FormBox>
         <div>
           <FontAwesomeIcon icon={faDice} size="3x" />

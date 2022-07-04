@@ -37,11 +37,11 @@ const Menu = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  margin-top: 30px;
 `;
 const Btn = styled.div<{ Active: boolean }>`
   width: 100px;
   background-color: ${(props) => props.theme.fontColor};
-
   color: ${(props) => (props.Active ? props.theme.blue : props.theme.bgColor)};
   display: flex;
   align-items: center;
@@ -51,6 +51,11 @@ const Btn = styled.div<{ Active: boolean }>`
   cursor: pointer;
   &:hover {
     opacity: 0.6;
+  }
+  @media screen and (max-width: 768px) {
+    padding: 0;
+    height: 30px;
+    margin-top: 30px;
   }
 `;
 

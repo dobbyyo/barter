@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import AuthLayout from '../components/auth/AuthLayout';
 import FormBox from '../components/auth/FormBox';
 import Separator from '../components/auth/Separator';
-import { Button, Input } from '../components/shared';
+import { Button, Input, Interval } from '../components/shared';
 import BottomBox from '../components/auth/BottomBox';
 import routes from '../routes';
 import PageTitle from '../components/PageTitle';
@@ -80,6 +80,8 @@ const SignUp = () => {
   return (
     <AuthLayout>
       <PageTitle title="회원가입" />
+      <Interval />
+
       <FormBox>
         <div>
           <FontAwesomeIcon icon={faDice} size="3x" />

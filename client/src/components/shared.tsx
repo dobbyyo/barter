@@ -67,3 +67,7 @@ export const ErrorSpan = styled.span`
   justify-content: center;
   font-size: 25px;
 `;
+
+export const Interval = styled.div`
+  margin-top: 50px;
+`;

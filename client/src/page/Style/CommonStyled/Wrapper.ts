@@ -64,6 +64,7 @@ export const PageBtn = styled.button`
   width: 100%;
   height: 100%;
   border: 1px solid ${(props) => props.theme.borderColor};
+  color: ${(props) => props.theme.fontColor};
 
   cursor: pointer;
   background-color: ${(props) => props.theme.bgColor};

@@ -2,7 +2,7 @@
 import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark, faHeart as Heart } from '@fortawesome/free-regular-svg-icons';
+import { faHeart as Heart } from '@fortawesome/free-regular-svg-icons';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 
 import Avatar from '../Avatar';
@@ -75,9 +75,6 @@ const PostLayout = ({ post }: Props) => {
               onClick={onToggleLike}
               style={{ color: post.isLiked ? 'red' : 'inherit' }}
             />
-          </Icon>
-          <Icon>
-            <FontAwesomeIcon icon={faBookmark} className="i" />
           </Icon>
         </Icons>
       </TopWrapper>

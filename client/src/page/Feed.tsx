@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import PageTitle from '../components/PageTitle';
 import PostLayout from '../components/post/PostLayout';
 import { Post, useSeeFeedQuery } from '../generated/graphql';
 import PageHook from '../hook/PageHook';
@@ -12,6 +13,8 @@ const Feed = () => {
 
   return (
     <Wrapper>
+      <PageTitle title="Feed" />
+
       <Title>
         <h1>Feed</h1>
         <span>Feed 게시글</span>

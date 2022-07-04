@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import PageTitle from '../components/PageTitle';
 import PostLayout from '../components/post/PostLayout';
 import { Post, useCategoryPostQuery } from '../generated/graphql';
 import PageHook from '../hook/PageHook';
@@ -14,6 +15,8 @@ const Category = () => {
 
   return (
     <Wrapper>
+      <PageTitle title={category as string} />
+
       <Title>
         <h1>Category</h1>
         <span>{category} 게시글</span>

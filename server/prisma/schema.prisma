@@ -21,7 +21,7 @@ model User {
   followers  User[]    @relation("FollowRelation", references: [id])
   followings User[]    @relation("FollowRelation", references: [id])
   posts      Post[]
-  likes       Like[]
+  likes      Like[]
   comments   Comment[]
   rooms      Room[]
   message    Message[]
@@ -31,7 +31,7 @@ model User {
 
 model Post {
   id        Int       @id @default(autoincrement())
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   file      String
   title     String
