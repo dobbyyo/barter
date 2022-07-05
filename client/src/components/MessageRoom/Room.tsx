@@ -4,6 +4,7 @@ import { faBackspace } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useLocation } from 'react-router-dom';
 
 import {
   MeQuery,
@@ -31,12 +32,18 @@ import {
 interface Props {
   id: number | undefined;
   meData: MeQuery | undefined;
-
   onMoveRoom: () => void;
+  newUser: boolean;
+}
+interface UsernameState {
+  username?: string;
 }
 
-const Room: FC<Props> = ({ id, meData, onMoveRoom }) => {
+const Room: FC<Props> = ({ id, meData, onMoveRoom, newUser }) => {
   const { register, handleSubmit, getValues, setValue } = useForm();
+
+  const location = useLocation();
+  const state = location.state as UsernameState | null;
 
   const { data, subscribeToMore } = useSeeRoomQuery({
     variables: { id: Number(id) },
@@ -90,11 +97,7 @@ const Room: FC<Props> = ({ id, meData, onMoveRoom }) => {
   const client = useApolloClient();
 
   const updateQueryVoid = (prevQuery: any, options: any) => {
-    console.log(prevQuery);
-    console.log('____________________');
-    console.log(options);
     const message = options.subscriptionData.data.roomUpdates;
-    console.log(message);
     if (message.id) {
       const incomingMessage = client.cache.writeFragment({
         fragment: gql`
@@ -128,7 +131,7 @@ const Room: FC<Props> = ({ id, meData, onMoveRoom }) => {
   const [subscribed, setSubscribed] = useState(false);
 
   useEffect(() => {
-    if (data?.seeRoom && !subscribed) {
+    if (data?.seeRoom && !subscribed && !newUser) {
       subscribeToMore({
         document: RoomUpdatesDocument,
         variables: {
@@ -141,7 +144,7 @@ const Room: FC<Props> = ({ id, meData, onMoveRoom }) => {
       });
       setSubscribed(true);
     }
-  }, [data, subscribed]);
+  }, [data, subscribed, newUser]);
 
   const [MutationReadMessage] = useReadMessageMutation({
     update(cache, { data: ReadData }) {

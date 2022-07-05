@@ -63,6 +63,7 @@ const List = styled.ul`
 `;
 const Item = styled.li`
   margin-right: 20px;
+  cursor: pointer;
   @media screen and (max-width: 768px) {
     margin-right: 12px;
   }
@@ -194,7 +195,11 @@ const Profile = () => {
   }, []);
 
   const onMoveMessage = useCallback(() => {
-    navigate(routes.messageRoom);
+    navigate(routes.messageRoom, {
+      state: {
+        username,
+      },
+    });
   }, []);
   const isDeskTop = useMediaQuery({ minWidth: 769 });
 

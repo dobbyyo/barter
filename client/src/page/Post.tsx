@@ -102,6 +102,10 @@ const Post = () => {
     navigate(routes.messageRoom);
   }, []);
 
+  const onMoveComment = useCallback(() => {
+    window.scrollTo(999, 999);
+  }, []);
+
   return (
     <>
       <PageTitle title="Post" />
@@ -160,7 +164,7 @@ const Post = () => {
                 />
               </PostAction>
               <PostAction>
-                <FontAwesomeIcon size="lg" icon={faComment} />
+                <FontAwesomeIcon size="lg" icon={faComment} onClick={onMoveComment} />
               </PostAction>
               <PostAction>
                 <FontAwesomeIcon size="lg" icon={faPaperPlane} onClick={onMoveMessage} />

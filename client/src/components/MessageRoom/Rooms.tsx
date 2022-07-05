@@ -24,6 +24,7 @@ const Column = styled.div`
   height: 100%;
   align-items: center;
   justify-content: space-around;
+  cursor: pointer;
 `;
 
 const Data = styled.div`

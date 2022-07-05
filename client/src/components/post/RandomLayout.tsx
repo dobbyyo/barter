@@ -11,8 +11,8 @@ import { BoldText } from '../shared';
 import Avatar from '../Avatar';
 
 const Wrapper = styled.div`
-  width: 100%;
-  overflow: hidden;
+  width: 90%;
+  margin-left: 10px;
 `;
 
 export const Header = styled.div`
@@ -29,13 +29,15 @@ export const Header = styled.div`
   padding: 5px 10px;
 `;
 const PostsContainer = styled.div`
-  background-color: white;
+  background-color: initial;
   border: 1px solid ${(props) => props.theme.borderColor};
   max-width: 280px;
   position: relative;
   border-radius: 50%;
-  margin: 0 130px;
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   &:hover {
     ${Header} {
       opacity: 1;
@@ -60,10 +62,22 @@ interface Props {
   post: RandomPostsQuery | undefined;
 }
 const RandomLayout: FC<Props> = ({ post }) => {
-  let settings = { dots: true, infinite: true, speed: 500, slidesToShow: 4, slidesToScroll: 1 };
+  let settings = {
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    autoplay: true,
+  };
   const isDeskTop = useMediaQuery({ minWidth: 769 });
   if (!isDeskTop) {
-    settings = { dots: true, infinite: true, speed: 500, slidesToShow: 2, slidesToScroll: 1 };
+    settings = {
+      infinite: true,
+      speed: 500,
+      slidesToShow: 2,
+      slidesToScroll: 1,
+      autoplay: true,
+    };
   }
 
   return (
