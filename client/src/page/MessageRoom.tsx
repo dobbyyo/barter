@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Room from '../components/MessageRoom/Room';
 import Rooms from '../components/MessageRoom/Rooms';
-import { Room as RoomQuery, useSeeProfileQuery, useSeeRoomsQuery } from '../generated/graphql';
+import { Room as RoomQuery, useSeeRoomsQuery } from '../generated/graphql';
 import LoginUser from '../hook/loginUser';
 
 const Container = styled.div`
@@ -38,9 +38,8 @@ const MessageRoom = () => {
 
   const { data: MeData } = LoginUser();
 
-  const { data, loading } = useSeeRoomsQuery();
+  const { data } = useSeeRoomsQuery();
   const [openRoom, setOpenRoom] = useState(false);
-  const [newUser, setNewUser] = useState(false);
   const [roomId, setRoomID] = useState<number>();
   const onConsole = useCallback(
     (id?: number) => {
@@ -60,7 +59,7 @@ const MessageRoom = () => {
   return (
     <Container>
       {openRoom ? (
-        <Room id={roomId} meData={MeData} onMoveRoom={onMoveRoom} newUser={newUser} />
+        <Room id={roomId} meData={MeData} onMoveRoom={onMoveRoom} />
       ) : (
         <Row>
           {data &&

@@ -1,5 +1,4 @@
 /* eslint-disable react/no-array-index-key */
-
 import React, { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';

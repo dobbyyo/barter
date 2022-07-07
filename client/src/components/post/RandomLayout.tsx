@@ -32,6 +32,7 @@ const PostsContainer = styled.div`
   background-color: initial;
   border: 1px solid ${(props) => props.theme.borderColor};
   max-width: 280px;
+  height: 100%;
   position: relative;
   border-radius: 50%;
   display: flex;
@@ -55,6 +56,7 @@ export const Username = styled(BoldText)`
 `;
 export const PostFile = styled.img`
   width: 100%;
+  height: 300px;
   border-radius: 50%;
 `;
 
@@ -68,6 +70,7 @@ const RandomLayout: FC<Props> = ({ post }) => {
     slidesToShow: 4,
     slidesToScroll: 1,
     autoplay: true,
+    arrows: false,
   };
   const isDeskTop = useMediaQuery({ minWidth: 769 });
   if (!isDeskTop) {
@@ -77,6 +80,7 @@ const RandomLayout: FC<Props> = ({ post }) => {
       slidesToShow: 2,
       slidesToScroll: 1,
       autoplay: true,
+      arrows: false,
     };
   }
 

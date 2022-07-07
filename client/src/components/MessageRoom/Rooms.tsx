@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { Room as RoomQuery, useReadMessageMutation } from '../../generated/graphql';
+import { Room as RoomQuery } from '../../generated/graphql';
 import LoginUser from '../../hook/loginUser';
 import Avatar from '../Avatar';
 

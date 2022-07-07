@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import styled from 'styled-components';
-import { SeeProfileQuery, useSeeFollowersQuery, useSeeFollowingsQuery } from '../../generated/graphql';
+import { useSeeFollowersQuery, useSeeFollowingsQuery } from '../../generated/graphql';
 import Avatar from '../Avatar';
 
 const Box = styled.div`
@@ -30,12 +30,11 @@ const Username = styled.div`
 `;
 
 interface Props {
-  data: SeeProfileQuery | undefined;
   username: string | undefined;
   followers: boolean;
   following: boolean;
 }
-const FollowLayout: FC<Props> = ({ data, username, followers, following }) => {
+const FollowLayout: FC<Props> = ({ username, followers, following }) => {
   const { ref, inView } = useInView();
   const [toN, setToN] = useState(1);
   const [more, setMore] = useState(true);

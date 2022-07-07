@@ -8,6 +8,9 @@ export const PostsContainer = styled.div`
   max-width: 280px;
   position: relative;
   height: 450px;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 export const Header = styled.div`
@@ -26,7 +29,6 @@ export const PostFile = styled.img`
 `;
 export const TopWrapper = styled.div`
   width: 100%;
-  /* height: 200px; */
 `;
 export const PostData = styled.div`
   padding: 0 10px;

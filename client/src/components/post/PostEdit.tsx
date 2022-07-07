@@ -1,4 +1,3 @@
-/* eslint-disable no-unneeded-ternary */
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { faDice } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -69,20 +68,6 @@ const EditPost: FC<Props> = ({ userData, post }) => {
       return navigate(-1);
     },
   });
-  const onSubmit = useCallback(() => {
-    const { file, title, caption, category } = getValues();
-    if (file && title && caption && category) {
-      editPostMutation({
-        variables: {
-          id: Number(post?.seePost.post?.id),
-          title,
-          caption,
-          category,
-          file: uri,
-        },
-      });
-    }
-  }, []);
 
   useEffect(() => {
     const uuri = post?.seePost.post?.file;
@@ -96,6 +81,22 @@ const EditPost: FC<Props> = ({ userData, post }) => {
       setUri(objectUrl);
     }
   }, [watchingPostFile]);
+
+  const onSubmit = useCallback(() => {
+    const { file, title, caption, category } = getValues();
+    console.log(uri);
+    if (file && title && caption && category) {
+      editPostMutation({
+        variables: {
+          id: Number(post?.seePost.post?.id),
+          title,
+          caption,
+          category,
+          file: file[0],
+        },
+      });
+    }
+  }, []);
 
   return (
     <AuthLayout>

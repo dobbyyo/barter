@@ -67,13 +67,6 @@ const wsLink = new WebSocketLink({
   },
 });
 
-// const wsLink = new WebSocketLink(
-//   new SubscriptionClient('ws://localhost:4000/graphql', {
-//     connectionParams: {
-//       authToken: localStorage.getItem(TOKEN),
-//     },
-//   }),
-// );
 const httpLinks = authLink.concat(errorLink).concat(uploadHttpLink);
 
 const splitLink = split(

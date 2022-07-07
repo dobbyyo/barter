@@ -260,9 +260,7 @@ const Profile = () => {
               <Row>{ProfileData?.seeProfile?.user?.bio}</Row>
             </Column>
           </Header>
-          {(followers || following) && (
-            <FollowLayout data={ProfileData} username={username} followers={followers} following={following} />
-          )}
+          {(followers || following) && <FollowLayout username={username} followers={followers} following={following} />}
 
           <Grid>{arrPost && arrPost.map((post) => <PostLayout key={post?.id} post={post as Post} />)}</Grid>
         </Wrapper>

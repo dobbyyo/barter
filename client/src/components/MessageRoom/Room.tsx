@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-boolean-value */
 import { gql, useApolloClient } from '@apollo/client';
 import { faBackspace } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -33,17 +32,10 @@ interface Props {
   id: number | undefined;
   meData: MeQuery | undefined;
   onMoveRoom: () => void;
-  newUser: boolean;
-}
-interface UsernameState {
-  username?: string;
 }
 
-const Room: FC<Props> = ({ id, meData, onMoveRoom, newUser }) => {
+const Room: FC<Props> = ({ id, meData, onMoveRoom }) => {
   const { register, handleSubmit, getValues, setValue } = useForm();
-
-  const location = useLocation();
-  const state = location.state as UsernameState | null;
 
   const { data, subscribeToMore } = useSeeRoomQuery({
     variables: { id: Number(id) },
@@ -131,7 +123,7 @@ const Room: FC<Props> = ({ id, meData, onMoveRoom, newUser }) => {
   const [subscribed, setSubscribed] = useState(false);
 
   useEffect(() => {
-    if (data?.seeRoom && !subscribed && !newUser) {
+    if (data?.seeRoom && !subscribed) {
       subscribeToMore({
         document: RoomUpdatesDocument,
         variables: {
@@ -144,7 +136,7 @@ const Room: FC<Props> = ({ id, meData, onMoveRoom, newUser }) => {
       });
       setSubscribed(true);
     }
-  }, [data, subscribed, newUser]);
+  }, [data, subscribed]);
 
   const [MutationReadMessage] = useReadMessageMutation({
     update(cache, { data: ReadData }) {

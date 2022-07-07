@@ -16,7 +16,8 @@ export const Container = styled.div`
   align-items: center;
   @media screen and (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
-    padding: 20px 80px;
+    padding: 5px 10px;
+    gap: 10px;
   }
 `;
 
