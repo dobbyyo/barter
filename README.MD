@@ -37,4 +37,4 @@
 
 ## 자세히 보기
 
-노션 주소 - https://www.notion.so/Barter-Web-3e037378e4254f4d99aefd3d2733df60
+노션 주소 - https://acidic-stilton-3e9.notion.site/Barter-Web- 3e037378e4254f4d99aefd3d2733df60
